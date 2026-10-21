@@ -1,0 +1,25 @@
+{
+  "$schema": "../../docs/project.schema.json",
+  "template": "_media",
+  "prepare": [
+    {"run": "fixtures/media/make_media.py", "args": ["--out", "{project}/assets"], "creates": ["assets/ridge.jpg", "assets/harbor.jpg", "assets/canopy.jpg", "assets/ridge.webm"]}
+  ],
+  "title": "Media smoke",
+  "formats": ["9x16", "1x1", "4x5", "16x9"],
+  "duration": 16,
+  "bpm": 120,
+  "brand": "@studio",
+  "assets": { "ridge": "assets/ridge.jpg", "harbor": "assets/harbor.jpg", "canopy": "assets/canopy.jpg" },
+  "clips": { "pass": { "src": "assets/ridge.webm", "from": 0, "to": 6, "fps": 30, "width": 1280 } },
+  "content": {
+    "shots": [
+      { "id": "ridge", "image": "ridge", "beats": 6, "move": "push-in", "reveal": "wipe", "focus": [0.68, 0.5], "caption": "Every pixel is code" },
+      { "id": "harbor", "image": "harbor", "beats": 6, "move": "pan-l", "reveal": "iris", "duotone": true },
+      { "id": "pass", "clip": "pass", "beats": 8, "from": 0.5, "rate": 1.25, "move": "push-in", "reveal": "wipe", "dir": "u",
+        "lower": { "title": "Window seat", "sub": "6 s clip, 1.25x, frame-exact", "at": 1.5, "until": 6.5 } },
+      { "id": "canopy", "image": "canopy", "beats": 6, "move": "pull-out", "reveal": "slats", "focus": [0.62, 0.38] }
+    ],
+    "overlay": { "title": "Canopy", "sub": "portrait source, cover crop", "scene": "canopy", "at": 1.5, "side": "r" },
+    "end": { "name": "reelcode", "cta": "Make a film" }
+  }
+}

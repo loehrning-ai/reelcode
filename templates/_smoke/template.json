@@ -1,0 +1,53 @@
+{
+  "id": "_smoke",
+  "description": "Runtime proof: kinetic type, a cursor clicking a laid-out button, a bar chart, a counter and an end card.",
+  "requires": [],
+  "defaults": {
+    "duration": 12, "bpm": 120, "loop": false, "seed": 7, "quality": "draft",
+    "formats": ["9x16", "1x1", "16x9"],
+    "audio": { "music": "synth", "style": "minimal-tech", "key": "A minor", "sfx": true, "sfxDensity": "normal", "lufs": -14 }
+  },
+  "content_schema": {
+    "type": "object",
+    "required": ["hook", "button", "chart", "metric", "cta"],
+    "additionalProperties": false,
+    "properties": {
+      "hook": { "type": "object", "required": ["lines"], "additionalProperties": false, "properties": {
+        "lines": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "type": "string", "minLength": 1, "maxLength": 24 } },
+        "accent": { "type": "string" } } },
+      "button": { "type": "object", "required": ["prompt", "label"], "additionalProperties": false, "properties": {
+        "prompt": { "type": "string", "minLength": 1, "maxLength": 60 }, "label": { "type": "string", "minLength": 1, "maxLength": 16 } } },
+      "chart": { "type": "object", "required": ["claim", "data"], "additionalProperties": false, "properties": {
+        "claim": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "unit": { "type": "string" },
+        "highlight": { "type": ["integer", "string"] },
+        "data": { "type": "array", "minItems": 2, "maxItems": 6, "items": { "type": "object", "required": ["label", "value"], "additionalProperties": false,
+          "properties": { "label": { "type": "string", "minLength": 1, "maxLength": 12 }, "value": { "type": "number", "minimum": 0 } } } } } },
+      "metric": { "type": "object", "required": ["value", "label"], "additionalProperties": false, "properties": {
+        "value": { "type": "number" }, "from": { "type": "number" }, "label": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "unit": { "type": "string" }, "fmt": { "type": "string", "enum": ["int", "pct", "money", "k", "x"] } } },
+      "cta": { "type": "object", "required": ["name", "text"], "additionalProperties": false, "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 24 }, "text": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "url": { "type": "string", "maxLength": 48 } } }
+    }
+  },
+  "example": {
+    "title": "Smoke test",
+    "brand": {
+      "name": "reelcode",
+      "colors": { "bg": "#101113", "fg": "#F2EFE8", "accent": "#FF5A1F" },
+      "fonts": {
+        "display": { "family": "\"Archivo Condensed\", sans-serif", "weight": 800, "tracking": -0.03 },
+        "ui": { "family": "\"JetBrains Mono\", monospace", "weight": 400, "tracking": 0.02 }
+      }
+    },
+    "content": {
+      "hook": { "lines": ["ONE TIMELINE", "THREE FORMATS"], "accent": "THREE" },
+      "button": { "prompt": "Every frame is seek(t)", "label": "Render" },
+      "chart": { "claim": "Draft renders are cheap", "unit": "s", "highlight": 0,
+        "data": [{ "label": "draft", "value": 8 }, { "label": "final", "value": 64 }, { "label": "stills", "value": 3 }] },
+      "metric": { "value": 60, "label": "frames per second, four sub-frames each", "unit": "fps" },
+      "cta": { "name": "reelcode", "text": "Make a film", "url": "projects/demo/project.json" }
+    }
+  }
+}

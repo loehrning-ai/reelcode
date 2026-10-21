@@ -1,0 +1,166 @@
+{
+  "$schema": "../../docs/project.schema.json",
+  "template": "product-launch",
+  "prepare": [
+    {"capture": "fixture:mock-product", "creates": ["assets/assets.json", "assets/logo.png"]}
+  ],
+  "title": "Tallyport launch",
+  "brand": {
+    "name": "Tallyport",
+    "colors": {
+      "bg": "#0F1012",
+      "fg": "#F2F0EA",
+      "accent": "#3D5AFE",
+      "muted": "#6B6B70",
+      "surface": "#1C1C20"
+    },
+    "fonts": {
+      "display": {
+        "family": "Archivo, sans-serif",
+        "weight": 800,
+        "tracking": -0.03
+      },
+      "ui": {
+        "family": "Inter, sans-serif",
+        "weight": 400,
+        "tracking": 0.02
+      }
+    },
+    "logo": "assets/logo.png"
+  },
+  "content": {
+    "hook": {
+      "lines": [
+        "Nobody",
+        "trusts your",
+        "numbers",
+        "anymore."
+      ],
+      "accent": "numbers"
+    },
+    "product": {
+      "name": "Tallyport",
+      "tagline": "One source of truth for every metric."
+    },
+    "assemble": {
+      "screen": "home",
+      "pieces": [
+        "kpi-1",
+        "kpi-2",
+        "kpi-3",
+        "chart"
+      ],
+      "zoom": "kpi-2"
+    },
+    "features": [
+      {
+        "title": "Ask in plain words",
+        "screen": "home",
+        "click": "search",
+        "after": "search",
+        "zoom": "palette",
+        "say": "One question, three answers",
+        "tour": [
+          [
+            1090,
+            430,
+            510,
+            100
+          ],
+          [
+            1090,
+            640,
+            510,
+            75
+          ],
+          [
+            1090,
+            755,
+            510,
+            75
+          ]
+        ]
+      },
+      {
+        "title": "Alerts before the board meeting",
+        "screen": "editor",
+        "click": "save",
+        "after": "success",
+        "zoom": "notifications",
+        "say": "Alert is live → #growth",
+        "tour": [
+          [
+            2100,
+            220,
+            500,
+            125
+          ],
+          [
+            2100,
+            352,
+            500,
+            125
+          ],
+          [
+            2100,
+            484,
+            500,
+            125
+          ]
+        ]
+      },
+      {
+        "title": "Reports in one click",
+        "screen": "home",
+        "click": "export",
+        "after": "report",
+        "zoom": "report-chart",
+        "say": "Exported. Sent to #growth.",
+        "tour": [
+          [
+            2180,
+            480,
+            420,
+            130
+          ],
+          [
+            2180,
+            630,
+            420,
+            130
+          ],
+          [
+            2084,
+            1610,
+            540,
+            134
+          ]
+        ]
+      }
+    ],
+    "metric": {
+      "value": 118,
+      "from": 0,
+      "fmt": "int",
+      "unit": "%",
+      "label": "net revenue retention across teams on Tallyport",
+      "screen": "home",
+      "card": "kpi-2"
+    },
+    "cta": {
+      "text": "Start free",
+      "url": "tallyport.example",
+      "logo": "logo-svg",
+      "mark": [
+        0.011,
+        0.083,
+        0.222,
+        0.833
+      ]
+    }
+  },
+  "assets": {
+    "logo-svg": "assets/logo.svg"
+  },
+  "poster": 34.75
+}

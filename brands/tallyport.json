@@ -1,0 +1,12 @@
+{
+  "id": "tallyport",
+  "description": "Tallyport (the fictional fixtures/mock-product app): colours and fonts as captured by capture.mjs fixture:mock-product.",
+  "name": "Tallyport",
+  "colors": { "bg": "#0F1012", "fg": "#F2F0EA", "accent": "#3D5AFE", "muted": "#6B6B70", "surface": "#1C1C20" },
+  "fonts": {
+    "display": { "family": "Archivo, sans-serif", "weight": 800, "tracking": -0.03 },
+    "ui": { "family": "Inter, sans-serif", "weight": 400, "tracking": 0.02 }
+  },
+  "logo": "brands/tallyport/logo.svg",
+  "radius": 28
+}

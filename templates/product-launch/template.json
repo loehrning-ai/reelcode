@@ -1,0 +1,81 @@
+{
+  "id": "product-launch",
+  "description": "Product launch film: a problem hook slammed over the real KPI card with wrong numbers scrambling, a match cut into the UI assembling itself, 1-3 feature moments shot as a macro on the real control (click on the beat) whipping to the cropped payoff, one metric counted out of its card that collapses into the logo mark, then a large per-format CTA lockup.",
+  "requires": ["screens", "logo"],
+  "defaults": {
+    "duration": 22, "bpm": 120, "loop": false, "seed": 7, "quality": "draft",
+    "formats": ["9x16", "1x1", "4x5", "16x9"],
+    "audio": { "music": "synth", "style": "minimal-tech", "key": "A minor", "sfx": true, "sfxDensity": "normal", "lufs": -14 }
+  },
+  "content_schema": {
+    "type": "object", "required": ["hook", "product", "assemble", "features", "metric", "cta"], "additionalProperties": false,
+    "properties": {
+      "hook": { "type": "object", "required": ["lines"], "additionalProperties": false, "properties": {
+        "lines": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "type": "string", "minLength": 1, "maxLength": 18 } },
+        "accent": { "type": "string" },
+        "decoys": { "type": "array", "minItems": 2, "maxItems": 6, "items": { "type": "string", "minLength": 1, "maxLength": 10 } } } },
+      "product": { "type": "object", "required": ["name"], "additionalProperties": false, "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "tagline": { "type": "string", "maxLength": 60 } } },
+      "assemble": { "type": "object", "required": ["screen", "pieces"], "additionalProperties": false, "properties": {
+        "screen": { "type": "string" },
+        "pieces": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "type": "string" } },
+        "zoom": { "type": "string" } } },
+      "features": { "type": "array", "minItems": 1, "maxItems": 3, "items": {
+        "type": "object", "required": ["title", "screen"], "additionalProperties": false, "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 32 },
+          "screen": { "type": "string" },
+          "click": { "type": "string" },
+          "after": { "type": "string" },
+          "zoom": { "type": "string" },
+          "pop": { "type": "string" },
+          "say": { "type": "string", "minLength": 1, "maxLength": 36 },
+          "tour": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "type": ["string", "array"] } },
+          "focus": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+          "cursor": { "type": "array", "minItems": 1, "items": { "type": "object", "required": ["at"], "additionalProperties": false, "properties": {
+            "at": { "type": ["number", "string"] },
+            "to": { "type": ["string", "array"] },
+            "click": { "type": "boolean" },
+            "drag": { "type": ["string", "array"] } } } } } } },
+      "metric": { "type": "object", "required": ["value", "label"], "additionalProperties": false, "properties": {
+        "value": { "type": "number" }, "from": { "type": "number" }, "label": { "type": "string", "maxLength": 60 },
+        "unit": { "type": "string", "maxLength": 6 }, "prefix": { "type": "string", "maxLength": 3 },
+        "fmt": { "enum": ["int", "pct", "money", "k", "x"] }, "decimals": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "screen": { "type": "string" }, "card": { "type": "string" },
+        "cardValue": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+        "cardSpark": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number", "minimum": 0, "maximum": 1 } } } },
+      "cta": { "type": "object", "required": ["text"], "additionalProperties": false, "properties": {
+        "text": { "type": "string", "minLength": 1, "maxLength": 20 }, "url": { "type": "string", "maxLength": 40 },
+        "logo": { "type": "string", "minLength": 1 },
+        "mark": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number", "minimum": 0, "maximum": 1 } } } },
+      "timing": { "type": "object", "additionalProperties": false, "properties": {
+        "hook": { "type": "number", "minimum": 3 }, "assemble": { "type": "number", "minimum": 4 }, "feature": { "type": "number", "minimum": 4 },
+        "metric": { "type": "number", "minimum": 4 }, "cta": { "type": "number", "minimum": 3 } } }
+    }
+  },
+  "example": {
+    "title": "Tallyport launch",
+    "brand": {
+      "name": "Tallyport",
+      "colors": { "bg": "#0F1012", "fg": "#F2F0EA", "accent": "#3D5AFE", "muted": "#6B6B70", "surface": "#1C1C20" },
+      "fonts": {
+        "display": { "family": "\"Archivo Condensed\", sans-serif", "weight": 800, "tracking": -0.03 },
+        "ui": { "family": "\"JetBrains Mono\", monospace", "weight": 400, "tracking": 0.02 }
+      },
+      "logo": "assets/logo.png"
+    },
+    "assets": { "logo-svg": "assets/logo.svg" },
+    "content": {
+      "hook": { "lines": ["Nobody", "trusts your", "numbers", "anymore."], "accent": "numbers" },
+      "product": { "name": "Tallyport", "tagline": "One source of truth for every metric." },
+      "assemble": { "screen": "home", "pieces": ["kpi-1", "kpi-2", "kpi-3", "chart"], "zoom": "kpi-2" },
+      "features": [
+        { "title": "Ask in plain words", "screen": "home", "click": "search", "after": "search", "zoom": "palette", "say": "One question, three answers", "tour": [[1090, 430, 510, 100], [1090, 640, 510, 75], [1090, 755, 510, 75]] },
+        { "title": "Alerts before the board meeting", "screen": "editor", "click": "save", "after": "success", "zoom": "notifications", "say": "Alert is live → #growth", "tour": [[2100, 220, 500, 125], [2100, 352, 500, 125], [2100, 484, 500, 125]] },
+        { "title": "Reports in one click", "screen": "home", "click": "export", "after": "report", "zoom": "report-chart", "say": "Exported. Sent to #growth.", "tour": [[2180, 480, 420, 130], [2180, 630, 420, 130], [2084, 1610, 540, 134]] }
+      ],
+      "metric": { "value": 118, "from": 0, "fmt": "int", "unit": "%", "label": "net revenue retention across teams on Tallyport", "screen": "home", "card": "kpi-2" },
+      "cta": { "text": "Start free", "url": "tallyport.example", "logo": "logo-svg", "mark": [0.011, 0.083, 0.222, 0.833] }
+    }
+  }
+}

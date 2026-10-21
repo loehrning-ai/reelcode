@@ -1,0 +1,13 @@
+/* Bundled fonts: every one is licensed under the SIL Open Font License 1.1 (see LICENSES/ at the repository root).
+   The files are Latin subsets of the upstream variable fonts, converted to WOFF2. Because they ship with reelcode,
+   a film renders with the same type on macOS, Linux and CI. engine/fonts/fonts.json lists the same families for
+   the CLI (doctor, lint hints); keep the two in step. */
+
+@font-face { font-family: "Archivo"; src: url("Archivo-Variable.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-display: block; }
+/* Archivo at fixed widths, so a brand can name a condensed or expanded face directly. */
+@font-face { font-family: "Archivo Condensed"; src: url("Archivo-Variable.woff2") format("woff2"); font-weight: 100 900; font-stretch: 75%; font-display: block; }
+@font-face { font-family: "Archivo Expanded"; src: url("Archivo-Variable.woff2") format("woff2"); font-weight: 100 900; font-stretch: 125%; font-display: block; }
+@font-face { font-family: "Inter"; src: url("Inter-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
+@font-face { font-family: "JetBrains Mono"; src: url("JetBrainsMono-Variable.woff2") format("woff2"); font-weight: 100 800; font-display: block; }
+@font-face { font-family: "Jost"; src: url("Jost-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: block; }
+@font-face { font-family: "Space Grotesk"; src: url("SpaceGrotesk-Variable.woff2") format("woff2"); font-weight: 300 700; font-display: block; }

@@ -1,0 +1,18 @@
+{
+  "families": {
+    "Archivo": { "file": "Archivo-Variable.woff2", "weights": [100, 900], "role": "display or UI; variable width" },
+    "Archivo Condensed": { "file": "Archivo-Variable.woff2", "weights": [100, 900], "role": "condensed display type" },
+    "Archivo Expanded": { "file": "Archivo-Variable.woff2", "weights": [100, 900], "role": "wide display type" },
+    "Inter": { "file": "Inter-Variable.woff2", "weights": [100, 900], "role": "UI and body text" },
+    "JetBrains Mono": { "file": "JetBrainsMono-Variable.woff2", "weights": [100, 800], "role": "monospace labels, numbers, code" },
+    "Jost": { "file": "Jost-Variable.woff2", "weights": [100, 900], "role": "geometric display type" },
+    "Space Grotesk": { "file": "SpaceGrotesk-Variable.woff2", "weights": [300, 700], "role": "display type with character" }
+  },
+  "licenses": {
+    "Archivo-Variable.woff2": "LICENSES/Archivo-OFL.txt",
+    "Inter-Variable.woff2": "LICENSES/Inter-OFL.txt",
+    "JetBrainsMono-Variable.woff2": "LICENSES/JetBrainsMono-OFL.txt",
+    "Jost-Variable.woff2": "LICENSES/Jost-OFL.txt",
+    "SpaceGrotesk-Variable.woff2": "LICENSES/SpaceGrotesk-OFL.txt"
+  }
+}

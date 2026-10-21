@@ -1,0 +1,228 @@
+{
+  "$schema": "../../docs/project.schema.json",
+  "template": "explainer",
+  "title": "How a code-rendered video is made",
+  "brand": {
+    "name": "reelcode",
+    "colors": {
+      "bg": "#F1ECE2",
+      "fg": "#17171A",
+      "accent": "#E8461E",
+      "muted": "#77736B",
+      "surface": "#E2DBCD"
+    },
+    "fonts": {
+      "display": {
+        "family": "Jost, sans-serif",
+        "weight": 700,
+        "tracking": -0.02
+      },
+      "ui": {
+        "family": "\"JetBrains Mono\", monospace",
+        "weight": 400,
+        "tracking": 0
+      }
+    },
+    "radius": 22
+  },
+  "content": {
+    "kicker": "explainer / 4 steps",
+    "title": "How a code-rendered video is made",
+    "steps": [
+      {
+        "title": "Time in, frame out",
+        "short": "seek",
+        "body": "seek(t) is the whole contract: the frame depends on t and nothing else. No clocks, no dice.",
+        "diagram": {
+          "nodes": [
+            {
+              "label": "t=1.25",
+              "kind": "clock"
+            },
+            {
+              "label": "seek(t)",
+              "kind": "code"
+            },
+            {
+              "label": "draw(f)",
+              "kind": "code"
+            }
+          ],
+          "edges": [
+            {
+              "from": 0,
+              "to": 1,
+              "label": "time"
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "label": "frame"
+            }
+          ]
+        },
+        "hero": {
+          "kind": "scrub"
+        }
+      },
+      {
+        "title": "The browser paints",
+        "short": "paint",
+        "body": "Headless Chromium runs the page and every draw call lands on one canvas.",
+        "diagram": {
+          "nodes": [
+            {
+              "label": "page",
+              "kind": "screen"
+            },
+            {
+              "label": "canvas",
+              "kind": "box"
+            }
+          ],
+          "edges": [
+            {
+              "from": 0,
+              "to": 1,
+              "label": "2D calls"
+            }
+          ]
+        },
+        "hero": {
+          "kind": "paint"
+        }
+      },
+      {
+        "title": "Stamp every frame",
+        "short": "shoot",
+        "body": "The canvas is captured 60 times a second, four sub-frames each.",
+        "diagram": {
+          "nodes": [
+            {
+              "label": "canvas",
+              "kind": "screen"
+            },
+            {
+              "label": "shot()",
+              "kind": "code"
+            },
+            {
+              "label": "PNGs",
+              "kind": "frames"
+            }
+          ],
+          "edges": [
+            {
+              "from": 0,
+              "to": 1
+            },
+            {
+              "from": 1,
+              "to": 2,
+              "label": "x240/s"
+            }
+          ]
+        },
+        "hero": {
+          "kind": "filmstrip",
+          "label": "×240/s"
+        }
+      },
+      {
+        "title": "ffmpeg makes the film",
+        "short": "encode",
+        "body": "Sub-frames blend into motion blur, then H.264 meets the -14 LUFS mix.",
+        "diagram": {
+          "nodes": [
+            {
+              "label": "PNGs",
+              "kind": "frames"
+            },
+            {
+              "label": "tmix",
+              "kind": "box"
+            },
+            {
+              "label": "mix.wav",
+              "kind": "wave"
+            },
+            {
+              "label": "mp4",
+              "kind": "film"
+            }
+          ],
+          "edges": [
+            {
+              "from": 0,
+              "to": 1
+            },
+            {
+              "from": 1,
+              "to": 3
+            },
+            {
+              "from": 2,
+              "to": 3,
+              "label": "mux"
+            }
+          ],
+          "focus": 3
+        },
+        "hero": {
+          "kind": "blend"
+        }
+      }
+    ],
+    "recap": {
+      "text": "One function of time. Four formats.",
+      "sub": "Same timeline in 9:16, 4:5, 1:1 and 16:9."
+    },
+    "hook": "This is code."
+  },
+  "poster": "b45",
+  "variants": [
+    {
+      "id": "vo",
+      "title": "How a code-rendered video is made (voice-over + captions)",
+      "overrides": {
+        "audio": {
+          "voiceover": {
+            "engine": "say",
+            "voice": "Samantha",
+            "duck_db": -9,
+            "lines": [
+              {
+                "text": "This video is code. Here is how it is made.",
+                "at": "b0.5"
+              },
+              {
+                "text": "One. Time goes in, a frame comes out.",
+                "at": "b8"
+              },
+              {
+                "text": "Two. The browser paints it, call by call.",
+                "at": "b15"
+              },
+              {
+                "text": "Three. Every frame is captured.",
+                "at": "b22"
+              },
+              {
+                "text": "Four. ffmpeg blends and encodes the film.",
+                "at": "b29"
+              },
+              {
+                "text": "One function of time. Four formats.",
+                "at": "b37"
+              }
+            ]
+          }
+        },
+        "captions": {
+          "enabled": true,
+          "style": "clean"
+        }
+      }
+    }
+  ]
+}

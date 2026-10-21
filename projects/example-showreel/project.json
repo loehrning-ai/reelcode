@@ -1,0 +1,100 @@
+{
+  "$schema": "../../docs/project.schema.json",
+  "template": "showreel",
+  "title": "Studio reel",
+  "brand": {
+    "name": "reelcode",
+    "colors": {
+      "bg": "#0C0C0D",
+      "fg": "#F3F0E8",
+      "accent": "#C8F23C"
+    },
+    "fonts": {
+      "display": {
+        "family": "\"Archivo Condensed\", sans-serif",
+        "weight": 800,
+        "tracking": -0.02
+      },
+      "ui": {
+        "family": "\"JetBrains Mono\", monospace",
+        "weight": 400,
+        "tracking": 0.02
+      }
+    }
+  },
+  "content": {
+    "motif": "dot",
+    "shots": [
+      {
+        "technique": "scale",
+        "beats": 2,
+        "text": "ON THE BEAT",
+        "transition": "cut"
+      },
+      {
+        "technique": "kinetic",
+        "beats": 3,
+        "lines": [
+          "WE MAKE",
+          "TYPE MOVE"
+        ],
+        "accent": "MOVE",
+        "transition": "wipe"
+      },
+      {
+        "technique": "slam",
+        "beats": 4,
+        "text": "MOTION",
+        "sub": "SYSTEMS",
+        "transition": "cut"
+      },
+      {
+        "technique": "ticker",
+        "beats": 4,
+        "lines": [
+          "LAUNCHES",
+          "SHOWREELS",
+          "EXPLAINERS"
+        ],
+        "accent": "SHOWREELS",
+        "field": "bg",
+        "transition": "cut"
+      },
+      {
+        "technique": "grid",
+        "beats": 3,
+        "text": "STUDIO",
+        "accent": "U",
+        "field": "fg",
+        "transition": "slats"
+      },
+      {
+        "technique": "montage",
+        "beats": 7,
+        "lines": [
+          "LAUNCHES",
+          "DATA",
+          "LOOPS",
+          "ADS",
+          "STINGS"
+        ],
+        "text": "FRAME PERFECT",
+        "transition": "cut"
+      },
+      {
+        "technique": "formats",
+        "beats": 5,
+        "field": "bg",
+        "transition": "cut"
+      },
+      {
+        "technique": "end",
+        "beats": 4,
+        "text": "REELCODE",
+        "sub": "Brand motion, every format, on the beat.",
+        "transition": "cut"
+      }
+    ]
+  },
+  "poster": "b30.75"
+}

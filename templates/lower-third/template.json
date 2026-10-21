@@ -1,0 +1,66 @@
+{
+  "id": "lower-third",
+  "description": "Broadcast lower thirds and title overlays (name strap, topic bar, quote card, title) on a transparent canvas for use over footage; ProRes 4444 alpha export, optional demo over a clip.",
+  "requires": [],
+  "transparent": true,
+  "defaults": {
+    "duration": 16, "bpm": 120, "loop": false, "seed": 7, "quality": "draft",
+    "formats": ["9x16", "1x1", "4x5", "16x9"],
+    "audio": { "music": "synth", "style": "minimal-tech", "key": "A minor", "sfx": true, "sfxDensity": "normal", "lufs": -14 }
+  },
+  "content_schema": {
+    "type": "object",
+    "required": ["items"],
+    "additionalProperties": false,
+    "properties": {
+      "items": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "type": "object", "required": ["kind", "beats"], "additionalProperties": false, "properties": {
+        "kind": { "type": "string", "enum": ["name", "topic", "quote", "title"] },
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "beats": { "type": ["number", "string"], "minimum": 3, "maximum": 64, "pattern": "^fill$" },
+        "exit": { "type": "boolean" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "role": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "tag": { "type": "string", "minLength": 1, "maxLength": 20 },
+        "side": { "type": "string", "enum": ["l", "r"] },
+        "label": { "type": "string", "minLength": 1, "maxLength": 16 },
+        "texts": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "type": "string", "minLength": 1, "maxLength": 60 } },
+        "position": { "type": "string", "enum": ["bottom", "top"] },
+        "quote": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "author": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "kicker": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 48 },
+        "sub": { "type": "string", "minLength": 1, "maxLength": 60 }
+      } } },
+      "demo": { "type": "object", "required": ["clip"], "additionalProperties": false, "properties": {
+        "clip": { "type": "string", "minLength": 1 },
+        "from": { "type": "number", "minimum": 0 },
+        "rate": { "type": "number", "minimum": 0.1, "maximum": 8 },
+        "loop": { "type": "boolean" },
+        "move": { "type": "string", "enum": ["push-in", "pull-out", "pan-l", "pan-r", "pan-u", "pan-d", "none"] },
+        "amount": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "focus": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 1 } }
+      } }
+    }
+  },
+  "example": {
+    "title": "Tallyport Live lower thirds",
+    "brand": {
+      "name": "Tallyport",
+      "colors": { "bg": "#0F1012", "fg": "#F2F0EA", "accent": "#3D5AFE", "muted": "#6B6B70", "surface": "#1C1C20" },
+      "fonts": {
+        "display": { "family": "Archivo, sans-serif", "weight": 800, "tracking": -0.03 },
+        "ui": { "family": "Inter, sans-serif", "weight": 400, "tracking": 0.02 }
+      }
+    },
+    "exports": ["prores-alpha"],
+    "content": {
+      "items": [
+        { "kind": "name", "beats": 6, "name": "Mara Lindqvist", "role": "Head of Product, Tallyport", "tag": "LIVE" },
+        { "kind": "topic", "beats": 8, "label": "TOPIC", "texts": ["Closing the books in three days", "Why finance teams quit spreadsheets"] },
+        { "kind": "name", "beats": 5, "side": "r", "name": "Jonas Brandt", "role": "CFO, Kestrelle Freight" },
+        { "kind": "quote", "beats": 7, "quote": "We closed Q3 in three days instead of twelve.", "author": "Jonas Brandt", "role": "CFO, Kestrelle Freight" },
+        { "kind": "title", "beats": "fill", "kicker": "TALLYPORT LIVE", "title": "Month-end, minus the mess", "sub": "Episode 12 · tallyport.app" }
+      ]
+    }
+  }
+}

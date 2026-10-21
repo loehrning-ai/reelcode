@@ -1,0 +1,59 @@
+{
+  "template": "_smoke-ui",
+  "prepare": [
+    {"capture": "fixture:mock-product", "creates": ["assets/assets.json", "assets/logo.png"]}
+  ],
+  "title": "UI smoke test",
+  "brand": {
+    "name": "Tallyport",
+    "colors": {
+      "bg": "#0F1012",
+      "fg": "#F2F0EA",
+      "accent": "#3D5AFE"
+    },
+    "fonts": {
+      "display": {
+        "family": "\"Archivo Condensed\", sans-serif",
+        "weight": 800,
+        "tracking": -0.03
+      },
+      "ui": {
+        "family": "\"JetBrains Mono\", monospace",
+        "weight": 400,
+        "tracking": 0.02
+      }
+    },
+    "logo": "assets/logo.png"
+  },
+  "content": {
+    "statement": {
+      "text": "SHIP IT",
+      "sub": "Numbers your team trusts"
+    },
+    "shot": {
+      "screen": "home",
+      "pieces": [
+        "kpi-1",
+        "kpi-2",
+        "kpi-3",
+        "chart"
+      ],
+      "zoom": "kpi-2",
+      "click": "export"
+    },
+    "detail": {
+      "screen": "report",
+      "label": "Reports in one click",
+      "zoom": "report-chart"
+    },
+    "step": {
+      "title": "Export anywhere",
+      "body": "CSV, PDF or a live link."
+    },
+    "cta": {
+      "name": "Tallyport",
+      "text": "Start free",
+      "url": "tallyport.example"
+    }
+  }
+}

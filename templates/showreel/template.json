@@ -1,0 +1,323 @@
+{
+  "id": "showreel",
+  "description": "Kinetic-type studio reel: fast cuts on the beat, a new type technique every shot, an accent dot that travels across every cut; loops seamlessly.",
+  "requires": [],
+  "defaults": {
+    "duration": 16,
+    "bpm": 120,
+    "loop": true,
+    "seed": 7,
+    "quality": "draft",
+    "formats": [
+      "9x16",
+      "1x1",
+      "4x5",
+      "16x9"
+    ],
+    "brand": {
+      "springs": {
+        "med": [
+          0.35,
+          1
+        ]
+      }
+    },
+    "audio": {
+      "music": "synth",
+      "style": "punchy-pop",
+      "key": "E minor",
+      "sfx": true,
+      "sfxDensity": "normal",
+      "lufs": -14
+    }
+  },
+  "content_schema": {
+    "type": "object",
+    "required": [
+      "shots"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "motif": {
+        "type": "string",
+        "enum": [
+          "dot",
+          "none"
+        ],
+        "description": "dot (default): an accent dot persists across shots and carries the loop seam. none: no motif."
+      },
+      "shots": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 14,
+        "items": {
+          "type": "object",
+          "required": [
+            "technique",
+            "beats"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "technique": {
+              "type": "string",
+              "enum": [
+                "kinetic",
+                "stack",
+                "split",
+                "ticker",
+                "scale",
+                "grid",
+                "list",
+                "end",
+                "statement",
+                "metric",
+                "chart",
+                "steps",
+                "uiShot",
+                "formats",
+                "slam",
+                "montage"
+              ]
+            },
+            "beats": {
+              "type": [
+                "number",
+                "string"
+              ],
+              "minimum": 1,
+              "maximum": 16,
+              "pattern": "^fill$",
+              "description": "Shot length in beats, or \"fill\" (at most one shot) for the remainder."
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "sub": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "lines": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 6,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              }
+            },
+            "accent": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            "url": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 48
+            },
+            "transition": {
+              "type": "string",
+              "enum": [
+                "auto",
+                "cut",
+                "push",
+                "wipe",
+                "iris",
+                "slats"
+              ]
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "from": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "maxLength": 8
+                },
+                "prefix": {
+                  "type": "string",
+                  "maxLength": 4
+                },
+                "fmt": {
+                  "type": "string",
+                  "enum": [
+                    "int",
+                    "pct",
+                    "money",
+                    "k",
+                    "x"
+                  ]
+                },
+                "decimals": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "bars",
+                    "line",
+                    "donut",
+                    "counter"
+                  ]
+                },
+                "series": {
+                  "type": [
+                    "array",
+                    "object"
+                  ]
+                },
+                "highlight": {
+                  "type": [
+                    "integer",
+                    "string"
+                  ]
+                }
+              }
+            },
+            "screen": {
+              "type": "string",
+              "minLength": 1
+            },
+            "zoom": {
+              "type": "string",
+              "minLength": 1
+            },
+            "pieces": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "field": {
+              "type": "string",
+              "enum": [
+                "bg",
+                "accent",
+                "fg"
+              ],
+              "description": "The colour field the shot sits on: bg (default), accent (a flood, type in bg) or fg (the inverted cream shot, type in bg). Used by ticker, grid, list, kinetic and formats."
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "bleed",
+                "stack"
+              ],
+              "description": "statement only: bleed (default) crops huge type with the frame; stack sets it inside safe, filling it."
+            }
+          }
+        }
+      }
+    }
+  },
+  "example": {
+    "title": "Studio reel",
+    "brand": {
+      "name": "reelcode",
+      "colors": {
+        "bg": "#0C0C0D",
+        "fg": "#F3F0E8",
+        "accent": "#C8F23C"
+      },
+      "fonts": {
+        "display": {
+          "family": "\"Archivo Condensed\", sans-serif",
+          "weight": 800,
+          "tracking": -0.02
+        },
+        "ui": {
+          "family": "\"JetBrains Mono\", monospace",
+          "weight": 400,
+          "tracking": 0.02
+        }
+      }
+    },
+    "content": {
+      "motif": "dot",
+      "shots": [
+        {
+          "technique": "scale",
+          "beats": 2,
+          "text": "ON THE BEAT",
+          "transition": "cut"
+        },
+        {
+          "technique": "kinetic",
+          "beats": 3,
+          "lines": [
+            "WE MAKE",
+            "TYPE MOVE"
+          ],
+          "accent": "MOVE",
+          "transition": "wipe"
+        },
+        {
+          "technique": "slam",
+          "beats": 4,
+          "text": "MOTION",
+          "sub": "SYSTEMS",
+          "transition": "cut"
+        },
+        {
+          "technique": "ticker",
+          "beats": 4,
+          "lines": [
+            "LAUNCHES",
+            "SHOWREELS",
+            "EXPLAINERS"
+          ],
+          "accent": "SHOWREELS",
+          "field": "bg",
+          "transition": "cut"
+        },
+        {
+          "technique": "grid",
+          "beats": 3,
+          "text": "STUDIO",
+          "accent": "U",
+          "field": "fg",
+          "transition": "slats"
+        },
+        {
+          "technique": "montage",
+          "beats": 7,
+          "lines": [
+            "LAUNCHES",
+            "DATA",
+            "LOOPS",
+            "ADS",
+            "STINGS"
+          ],
+          "text": "FRAME PERFECT",
+          "transition": "cut"
+        },
+        {
+          "technique": "formats",
+          "beats": 5,
+          "field": "bg",
+          "transition": "cut"
+        },
+        {
+          "technique": "end",
+          "beats": 4,
+          "text": "REELCODE",
+          "sub": "Brand motion, every format, on the beat.",
+          "transition": "cut"
+        }
+      ]
+    }
+  }
+}

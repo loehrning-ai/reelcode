@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Bespoke film</title>
+<link rel="stylesheet" href="/engine/fonts/fonts.css">
+<style>html,body{margin:0;background:#000}canvas{display:block} *{transition:none!important;animation:none!important}</style></head>
+<body><canvas id="c"></canvas>
+<script type="module">
+// A bespoke film (project.page). Contract: window.seek(t) paints frame t as a pure function of t on canvas #c,
+// sized from ?w=&h= (mount() does this). No Math.random / Date.now / timers / rAF / CSS transitions.
+// mount() passes c = {W, H, format, grid, duration, project (resolved, brand expanded), variant, cutdown}.
+import { mount } from '/engine/bespoke.js';
+
+const clamp = (x) => Math.min(1, Math.max(0, x));
+const out3 = (x) => 1 - (1 - clamp(x)) ** 3;
+const WORDS = ['ONE', 'OFF', 'FILM'];
+
+await mount({
+  draw(ctx, t, c) {
+    const { W, H, grid, project } = c, col = project.brand.colors, font = project.brand.fonts.display;
+    const b = grid.at(t), bar = Math.max(0, Math.floor(b / 4)), p = out3((b - bar * 4) / 1.5);
+    const u = Math.min(W, H) / 1080, pad = 96 * u;
+    ctx.fillStyle = col.bg; ctx.fillRect(0, 0, W, H);
+    // a block that steps to a new corner every bar (the cadence: something new each bar)
+    const spots = [[0, 0], [1, 0], [1, 1], [0, 1]], s = 220 * u;
+    const from = spots[(bar + 3) % 4], to = spots[bar % 4];
+    const x = pad + (W - 2 * pad - s) * (from[0] + (to[0] - from[0]) * p), y = pad + (H - 2 * pad - s) * (from[1] + (to[1] - from[1]) * p);
+    ctx.fillStyle = col.accent; ctx.fillRect(x, y, s, s);
+    // the word of this bar, wiped in from the left
+    const word = WORDS[bar % WORDS.length], size = 200 * u;
+    ctx.font = `${font.weight || 800} ${size}px ${font.family}`;
+    ctx.textBaseline = 'middle';
+    const w = ctx.measureText(word).width;
+    ctx.save(); ctx.beginPath(); ctx.rect((W - w) / 2, 0, w * p, H); ctx.clip();
+    ctx.fillStyle = col.fg; ctx.fillText(word, (W - w) / 2, H / 2); ctx.restore();
+  },
+  // seconds: one event per bar, on the measured grid
+  events: (c) => Array.from({ length: c.grid.totalBeats / 4 }, (_, i) => c.grid.bar(i)),
+  cues: (c) => Array.from({ length: c.grid.totalBeats / 4 }, (_, i) => ({ beat: 4 * i, sfx: i ? 'pop' : 'thump', gain_db: -8, pan: 0, id: `page:${i}` })),
+});
+</script>
+</body></html>

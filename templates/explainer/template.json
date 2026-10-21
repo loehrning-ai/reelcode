@@ -1,0 +1,406 @@
+{
+  "id": "explainer",
+  "description": "How-it-works explainer built around one object that travels through every step: a cold open of the finished film in four aspect frames, 3-5 steps that each show the thing itself in a hero shot (scrub, paint, filmstrip, blend, or the flow diagram) with the diagram as a caption strip, and a recap whose stage nodes fire on consecutive beats and converge into the brand lockup.",
+  "requires": [],
+  "defaults": {
+    "duration": 30,
+    "bpm": 96,
+    "loop": false,
+    "seed": 7,
+    "quality": "draft",
+    "formats": [
+      "9x16",
+      "1x1",
+      "4x5",
+      "16x9"
+    ],
+    "audio": {
+      "music": "synth",
+      "style": "lofi",
+      "key": "D minor",
+      "sfx": true,
+      "sfxDensity": "normal",
+      "lufs": -14
+    }
+  },
+  "content_schema": {
+    "type": "object",
+    "required": [
+      "title",
+      "steps",
+      "recap"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "kicker": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 40,
+        "description": "Small accent line above the title. Default: '<n> steps'."
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "description": "The question or topic, shown big on the intro."
+      },
+      "stepBeats": {
+        "type": "integer",
+        "minimum": 6,
+        "maximum": 16,
+        "description": "Beats per step. Default: as long as the duration allows (6-16), leaving at least 8 beats for the recap."
+      },
+      "steps": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 5,
+        "items": {
+          "type": "object",
+          "required": [
+            "title",
+            "diagram"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32,
+              "description": "Step headline (display font)."
+            },
+            "body": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 96,
+              "description": "Optional script line (not drawn: the hero shot carries the step; use it for a voice-over)."
+            },
+            "short": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 10,
+              "description": "Short name for the progress rail and the recap node. Default: the first word of title."
+            },
+            "diagram": {
+              "type": "object",
+              "required": [
+                "nodes"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "nodes": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 4,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "label"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "label": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 12,
+                        "description": "Node label (UI font). Keep to ~8 chars so 16:9 can lay the flow out horizontally."
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "box",
+                          "code",
+                          "screen",
+                          "frames",
+                          "film",
+                          "clock",
+                          "wave"
+                        ],
+                        "description": "Glyph drawn inside the node. Default: box (label only)."
+                      }
+                    }
+                  }
+                },
+                "edges": {
+                  "type": "array",
+                  "maxItems": 6,
+                  "description": "Arrows between nodes by index. Default: a chain 0->1->2...",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "from",
+                      "to"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "from": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3
+                      },
+                      "to": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 3
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 12
+                      }
+                    }
+                  }
+                },
+                "focus": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3,
+                  "description": "Node that lights up in the accent once the diagram is built. Default: the last node."
+                }
+              }
+            },
+            "hero": {
+              "type": "object",
+              "required": [
+                "kind"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "scrub",
+                    "paint",
+                    "filmstrip",
+                    "blend",
+                    "diagram"
+                  ],
+                  "description": "Hero shot: scrub (timecode drags the frame), paint (a browser window paints the frame call by call), filmstrip (shutter stamps frames into a streaming strip), blend (sub-frames collapse into one blurred frame plus a waveform into a play tile), diagram (the flow diagram, large). Default: diagram."
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 12,
+                  "description": "Big display label the hero shows (filmstrip: the frame rate, e.g. '×240/s')."
+                }
+              }
+            }
+          }
+        }
+      },
+      "recap": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "Closing line above the full pipeline."
+          },
+          "sub": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 72,
+            "description": "Optional smaller line under the closing lockup."
+          },
+          "end": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "description": "Closing lockup line on the accent panel that covers the last 2.5 beats. Default: brand.name, else the title."
+          }
+        }
+      },
+      "hook": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 24,
+        "description": "Cold-open display line over the four aspect frames (about 3 words). Default: 'This is code.'"
+      }
+    }
+  },
+  "example": {
+    "title": "How a code-rendered video is made",
+    "poster": "s25",
+    "brand": {
+      "name": "reelcode",
+      "colors": {
+        "bg": "#F1ECE2",
+        "fg": "#17171A",
+        "accent": "#E8461E",
+        "muted": "#77736B",
+        "surface": "#E2DBCD"
+      },
+      "fonts": {
+        "display": {
+          "family": "Jost, sans-serif",
+          "weight": 700,
+          "tracking": -0.02
+        },
+        "ui": {
+          "family": "\"JetBrains Mono\", monospace",
+          "weight": 400,
+          "tracking": 0
+        }
+      },
+      "radius": 22
+    },
+    "content": {
+      "kicker": "explainer / 4 steps",
+      "title": "How a code-rendered video is made",
+      "steps": [
+        {
+          "title": "Time in, frame out",
+          "short": "seek",
+          "body": "seek(t) is the whole contract: the frame depends on t and nothing else. No clocks, no dice.",
+          "diagram": {
+            "nodes": [
+              {
+                "label": "t=1.25",
+                "kind": "clock"
+              },
+              {
+                "label": "seek(t)",
+                "kind": "code"
+              },
+              {
+                "label": "draw(f)",
+                "kind": "code"
+              }
+            ],
+            "edges": [
+              {
+                "from": 0,
+                "to": 1,
+                "label": "time"
+              },
+              {
+                "from": 1,
+                "to": 2,
+                "label": "frame"
+              }
+            ]
+          },
+          "hero": {
+            "kind": "scrub"
+          }
+        },
+        {
+          "title": "The browser paints",
+          "short": "paint",
+          "body": "Headless Chromium runs the page and every draw call lands on one canvas.",
+          "diagram": {
+            "nodes": [
+              {
+                "label": "page",
+                "kind": "screen"
+              },
+              {
+                "label": "canvas",
+                "kind": "box"
+              }
+            ],
+            "edges": [
+              {
+                "from": 0,
+                "to": 1,
+                "label": "2D calls"
+              }
+            ]
+          },
+          "hero": {
+            "kind": "paint"
+          }
+        },
+        {
+          "title": "Screenshot every frame",
+          "short": "shoot",
+          "body": "The canvas is captured 60 times a second, four sub-frames each.",
+          "diagram": {
+            "nodes": [
+              {
+                "label": "canvas",
+                "kind": "screen"
+              },
+              {
+                "label": "shot()",
+                "kind": "code"
+              },
+              {
+                "label": "PNGs",
+                "kind": "frames"
+              }
+            ],
+            "edges": [
+              {
+                "from": 0,
+                "to": 1
+              },
+              {
+                "from": 1,
+                "to": 2,
+                "label": "x240/s"
+              }
+            ]
+          },
+          "hero": {
+            "kind": "filmstrip",
+            "label": "×240/s"
+          }
+        },
+        {
+          "title": "ffmpeg makes the film",
+          "short": "encode",
+          "body": "Sub-frames blend into motion blur, then H.264 meets the -14 LUFS mix.",
+          "diagram": {
+            "nodes": [
+              {
+                "label": "PNGs",
+                "kind": "frames"
+              },
+              {
+                "label": "tmix",
+                "kind": "box"
+              },
+              {
+                "label": "mix.wav",
+                "kind": "wave"
+              },
+              {
+                "label": "mp4",
+                "kind": "film"
+              }
+            ],
+            "edges": [
+              {
+                "from": 0,
+                "to": 1
+              },
+              {
+                "from": 1,
+                "to": 3
+              },
+              {
+                "from": 2,
+                "to": 3,
+                "label": "mux"
+              }
+            ],
+            "focus": 3
+          },
+          "hero": {
+            "kind": "blend"
+          }
+        }
+      ],
+      "recap": {
+        "text": "One function of time. Four formats.",
+        "sub": "Same timeline in 9:16, 4:5, 1:1 and 16:9."
+      },
+      "hook": "This is code."
+    }
+  }
+}

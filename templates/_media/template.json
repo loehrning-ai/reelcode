@@ -1,0 +1,65 @@
+{
+  "id": "_media",
+  "description": "Media proof: photos (crop, Ken Burns, reveals, duotone), a pre-extracted clip, lower thirds and an end card.",
+  "requires": [],
+  "defaults": {
+    "duration": 16, "bpm": 120, "loop": false, "seed": 7, "quality": "draft",
+    "formats": ["9x16", "1x1", "4x5", "16x9"],
+    "audio": { "music": "synth", "style": "minimal-tech", "key": "A minor", "sfx": true, "sfxDensity": "normal", "lufs": -14 }
+  },
+  "content_schema": {
+    "type": "object",
+    "required": ["shots", "end"],
+    "additionalProperties": false,
+    "properties": {
+      "shots": { "type": "array", "minItems": 1, "maxItems": 8, "items": { "type": "object", "required": ["beats"], "additionalProperties": false, "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "beats": { "type": "number", "minimum": 2 },
+        "image": { "type": "string", "minLength": 1 },
+        "clip": { "type": "string", "minLength": 1 },
+        "from": { "type": "number", "minimum": 0 }, "to": { "type": "number", "minimum": 0 },
+        "rate": { "type": "number", "minimum": 0.1, "maximum": 8 }, "loop": { "type": "boolean" },
+        "fit": { "type": "string", "enum": ["cover", "contain"] },
+        "focus": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+        "move": { "type": "string", "enum": ["push-in", "pull-out", "pan-l", "pan-r", "pan-u", "pan-d", "none"] },
+        "amount": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "reveal": { "type": "string", "enum": ["wipe", "iris", "slats", "none"] },
+        "dir": { "type": "string", "enum": ["l", "r", "u", "d"] },
+        "duotone": { "type": ["boolean", "array"], "minItems": 2, "maxItems": 2, "items": { "type": "string", "enum": ["bg", "fg", "accent", "muted", "surface"] } },
+        "caption": { "type": "string", "minLength": 1, "maxLength": 48 },
+        "lower": { "type": "object", "required": ["title"], "additionalProperties": false, "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 32 }, "sub": { "type": "string", "maxLength": 40 },
+          "at": { "type": ["number", "string"] }, "until": { "type": ["number", "string"] }, "side": { "type": "string", "enum": ["l", "r"] } } },
+        "transition": { "type": "object", "required": ["type"], "additionalProperties": false, "properties": {
+          "type": { "type": "string", "enum": ["cut", "push", "wipe", "iris", "slats"] }, "beats": { "type": "number" }, "dir": { "type": "string", "enum": ["l", "r", "u", "d"] } } }
+      } } },
+      "overlay": { "type": "object", "required": ["title"], "additionalProperties": false, "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 32 }, "sub": { "type": "string", "maxLength": 40 },
+        "scene": { "type": "string" }, "at": { "type": ["number", "string"] }, "until": { "type": ["number", "string"] }, "side": { "type": "string", "enum": ["l", "r"] } } },
+      "end": { "type": "object", "required": ["name", "cta"], "additionalProperties": false, "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 24 }, "cta": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "url": { "type": "string", "maxLength": 48 } } }
+    }
+  },
+  "example": {
+    "title": "Media smoke",
+    "brand": {
+      "name": "reelcode",
+      "colors": { "bg": "#0C0C0D", "fg": "#F3F0E8", "accent": "#C8F23C" },
+      "fonts": {
+        "display": { "family": "\"Archivo Condensed\", sans-serif", "weight": 800, "tracking": -0.02 },
+        "ui": { "family": "\"JetBrains Mono\", monospace", "weight": 400, "tracking": 0.02 }
+      }
+    },
+    "assets": { "ridge": "../../fixtures/media/ridge.jpg", "harbor": "../../fixtures/media/harbor.jpg", "canopy": "../../fixtures/media/canopy.jpg" },
+    "content": {
+      "shots": [
+        { "id": "ridge", "image": "ridge", "beats": 8, "move": "push-in", "reveal": "wipe", "focus": [0.68, 0.5], "caption": "Every pixel is code" },
+        { "id": "harbor", "image": "harbor", "beats": 8, "move": "pan-l", "reveal": "iris", "duotone": true, "lower": { "title": "Night harbour", "sub": "duotone, brand colours", "at": 1.5 } },
+        { "id": "canopy", "image": "canopy", "beats": 8, "move": "pull-out", "reveal": "slats", "focus": [0.62, 0.38] }
+      ],
+      "overlay": { "title": "Canopy", "sub": "portrait source, cover crop", "scene": "canopy", "at": 1.5 },
+      "end": { "name": "reelcode", "cta": "Make a film" }
+    }
+  }
+}

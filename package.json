@@ -1,0 +1,43 @@
+{
+  "name": "reelcode",
+  "version": "0.1.0",
+  "description": "A motion design studio your coding agent runs. film = fn(t): seek(t) in, every format out, scored on the beat.",
+  "license": "MIT",
+  "author": "Tim Löhr <tim@loehrning.ai> (https://loehrning.ai)",
+  "homepage": "https://github.com/loehrning-ai/reelcode#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loehrning-ai/reelcode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/loehrning-ai/reelcode/issues"
+  },
+  "keywords": [
+    "motion-design",
+    "video",
+    "animation",
+    "canvas",
+    "ffmpeg",
+    "playwright",
+    "coding-agent",
+    "claude-code",
+    "kinetic-typography"
+  ],
+  "type": "module",
+  "private": true,
+  "bin": {
+    "reelcode": "bin/reelcode.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node bin/reelcode.mjs test",
+    "test:node": "node bin/reelcode.mjs test --node",
+    "test:py": "node bin/reelcode.mjs test --py",
+    "doctor": "node bin/reelcode.mjs doctor"
+  },
+  "dependencies": {
+    "playwright": "1.64.1"
+  }
+}

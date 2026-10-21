@@ -1,0 +1,10 @@
+{
+  "name": "reelcode",
+  "version": "0.1.0",
+  "description": "Make short motion-graphics films with reelcode, for Claude Code: shotlist on the beat grid, draft, contact-sheet critique until every axis scores 8, final in 9:16, 1:1, 4:5 and 16:9.",
+  "author": { "name": "Tim Löhr", "email": "tim@loehrning.ai", "url": "https://loehrning.ai" },
+  "homepage": "https://github.com/loehrning-ai/reelcode",
+  "repository": "https://github.com/loehrning-ai/reelcode",
+  "license": "MIT",
+  "keywords": ["motion-design", "video", "animation", "ffmpeg", "playwright", "kinetic-typography"]
+}

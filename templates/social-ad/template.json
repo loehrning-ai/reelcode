@@ -1,0 +1,115 @@
+{
+  "id": "social-ad",
+  "description": "6-20 s social ad from photos, product renders or footage: full-bleed hook that can slide from one photo to another, 2-3 media shots that enter over the outgoing shot, an offer/price card that becomes the CTA lockup; captions on by default (plates drop while they are on); cutdown- and variant-ready.",
+  "requires": [],
+  "defaults": {
+    "duration": 18.75, "bpm": 128, "loop": false, "seed": 7, "quality": "draft",
+    "formats": ["9x16", "1x1", "4x5", "16x9"],
+    "audio": { "music": "synth", "style": "punchy-pop", "key": "E minor", "sfx": true, "sfxDensity": "normal", "lufs": -14 },
+    "captions": { "enabled": true, "style": "bold" }
+  },
+  "content_schema": {
+    "type": "object",
+    "required": ["hook", "shots", "offer", "cta"],
+    "additionalProperties": false,
+    "properties": {
+      "frame": { "type": "object", "required": ["image"], "additionalProperties": false, "properties": {
+        "image": { "type": "string", "minLength": 1 },
+        "hole": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+        "radius": { "type": "number", "minimum": 0, "maximum": 0.4 } } },
+      "locale": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+      "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+      "timing": { "type": "object", "additionalProperties": false, "properties": {
+        "hook": { "type": "number", "minimum": 4, "maximum": 10 },
+        "offer": { "type": "number", "minimum": 6, "maximum": 12 },
+        "cta": { "type": "number", "minimum": 4, "maximum": 12 } } },
+      "hook": { "type": "object", "required": ["lines"], "additionalProperties": false, "properties": {
+        "lines": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "type": "string", "minLength": 1, "maxLength": 24 } },
+        "accent": { "type": "string", "minLength": 1 },
+        "image": { "type": "string", "minLength": 1 }, "clip": { "type": "string", "minLength": 1 },
+        "from": { "type": "number", "minimum": 0 }, "to": { "type": "number", "minimum": 0 }, "rate": { "type": "number", "minimum": 0.1, "maximum": 8 },
+        "focus": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+        "move": { "type": "string", "enum": ["push-in", "pull-out", "pan-l", "pan-r", "pan-u", "pan-d", "none"] },
+        "duotone": { "type": "boolean" },
+        "near": { "type": "string", "minLength": 1 },
+        "nearSpeed": { "type": "number", "minimum": 0, "maximum": 4 },
+        "drift": { "type": "number", "minimum": 0, "maximum": 3 },
+        "then": { "type": "object", "additionalProperties": false, "properties": {
+          "drift": { "type": "number", "minimum": 0, "maximum": 3 },
+          "image": { "type": "string", "minLength": 1 }, "clip": { "type": "string", "minLength": 1 },
+          "from": { "type": "number", "minimum": 0 }, "to": { "type": "number", "minimum": 0 }, "rate": { "type": "number", "minimum": 0.1, "maximum": 8 },
+          "focus": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+          "duotone": { "type": "boolean" } } },
+        "turn": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "turnAt": { "type": "number", "minimum": 1, "maximum": 8 } } },
+      "shots": { "type": "array", "minItems": 2, "maxItems": 3, "items": { "type": "object", "additionalProperties": false, "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "image": { "type": "string", "minLength": 1 }, "clip": { "type": "string", "minLength": 1 },
+        "frame": { "type": "boolean" },
+        "pull": { "type": "number", "minimum": 0.5, "maximum": 8 },
+        "near": { "type": "string", "minLength": 1 }, "nearSpeed": { "type": "number", "minimum": 0.1, "maximum": 3 },
+        "creep": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "flap": { "type": "object", "required": ["rows"], "additionalProperties": false, "properties": {
+          "rows": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "type": "string", "minLength": 1, "maxLength": 12 } },
+          "accent": { "type": "integer", "minimum": 0, "maximum": 3 } } },
+        "beats": { "type": "number", "minimum": 3, "maximum": 12 },
+        "line": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "side": { "type": "string", "enum": ["l", "r"] },
+        "lower": { "type": "object", "required": ["title"], "additionalProperties": false, "properties": {
+          "title": { "type": "string", "minLength": 1, "maxLength": 32 }, "sub": { "type": "string", "maxLength": 40 },
+          "at": { "type": ["number", "string"] }, "until": { "type": ["number", "string"] }, "side": { "type": "string", "enum": ["l", "r"] } } },
+        "after": { "type": "boolean" },
+        "from": { "type": "number", "minimum": 0 }, "to": { "type": "number", "minimum": 0 },
+        "rate": { "type": "number", "minimum": 0.1, "maximum": 8 }, "loop": { "type": "boolean" },
+        "focus": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+        "move": { "type": "string", "enum": ["push-in", "pull-out", "pan-l", "pan-r", "pan-u", "pan-d", "none"] },
+        "amount": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "reveal": { "type": "string", "enum": ["wipe", "iris", "slats", "none"] },
+        "dir": { "type": "string", "enum": ["l", "r", "u", "d"] },
+        "duotone": { "type": "boolean" } } } },
+      "offer": { "type": "object", "required": ["title", "price"], "additionalProperties": false, "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "price": { "type": "number", "minimum": 0 },
+        "was": { "type": "number", "minimum": 0 },
+        "decimals": { "type": "integer", "minimum": 0, "maximum": 2 },
+        "badge": { "type": "string", "minLength": 1, "maxLength": 24 },
+        "note": { "type": "string", "minLength": 1, "maxLength": 44 },
+        "image": { "type": "string", "minLength": 1 }, "clip": { "type": "string", "minLength": 1 },
+        "focus": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 1 } } } },
+      "cta": { "type": "object", "required": ["name", "text"], "additionalProperties": false, "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 20 },
+        "text": { "type": "string", "minLength": 1, "maxLength": 22 },
+        "chip": { "type": "string", "minLength": 1, "maxLength": 20 },
+        "showPrice": { "type": "boolean" },
+        "frame": { "type": "boolean" },
+        "url": { "type": "string", "maxLength": 40 },
+        "image": { "type": "string", "minLength": 1 }, "clip": { "type": "string", "minLength": 1 },
+        "focus": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number", "minimum": 0, "maximum": 1 } } } }
+    }
+  },
+  "example": {
+    "title": "Nightline night pass",
+    "brand": {
+      "name": "Nightline",
+      "colors": { "bg": "#0E1024", "fg": "#F5EFE6", "accent": "#FF9F43", "muted": "#B4ADC4", "surface": "#1D2040" },
+      "fonts": {
+        "display": { "family": "\"Archivo Condensed\", sans-serif", "weight": 800, "tracking": -0.02 },
+        "ui": { "family": "Inter, sans-serif", "weight": 500, "tracking": 0.01 }
+      },
+      "radius": 28
+    },
+    "assets": { "ridge": "../../fixtures/media/ridge.jpg", "harbor": "../../fixtures/media/harbor.jpg", "canopy": "../../fixtures/media/canopy.jpg" },
+    "captions": { "enabled": false },
+    "content": {
+      "locale": "en-IE", "currency": "EUR",
+      "timing": { "hook": 8, "offer": 8, "cta": 8 },
+      "hook": { "lines": ["Fall asleep", "in Berlin.", "Wake up in", "the Alps."], "accent": "Alps.", "image": "harbor", "then": { "image": "ridge" }, "turn": 2, "turnAt": 3 },
+      "shots": [
+        { "id": "board", "image": "harbor", "beats": 6, "line": "Board at 22:10." },
+        { "image": "ridge", "id": "dawn", "beats": 10, "line": "Sunrise at the window.", "focus": [0.5, 0.55] }
+      ],
+      "offer": { "title": "Night Pass · 3 nights", "price": 149, "was": 219, "badge": "Launch week −32%", "note": "Free changes up to 24 h", "image": "ridge", "focus": [0.5, 0.6] },
+      "cta": { "name": "Nightline", "text": "Book your berth", "chip": "3 nights from", "url": "nightline.example" }
+    }
+  }
+}

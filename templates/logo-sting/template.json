@@ -1,0 +1,61 @@
+{
+  "id": "logo-sting",
+  "description": "2-5 s logo reveal / bumper with an audio logo (riser + hit, or a 1-bar tick motif): frame 0 is the accent frame with the name as an overscanning, moving band (one panning line in 16x9, one word per line elsewhere); the words split on L/4 and exit through the vertical edges of a crop window that closes onto the mark plate (letters cropped, never squeezed or sliced through the x-height); the lockup locks on the hit directly at its final geometry. Optional 4-8 beat end card that continues the sting (same hero lockup, the accent field grows out of the mark plate and becomes a full-width bottom band carrying CTA + URL; the field floods the frame on the last beat); it renders on its own (cutdown keep [\"endcard\"]) to append to other films. score.py renders a three-act score to supply as audio.music. transparent:true enables the prores-alpha export.",
+  "requires": [],
+  "defaults": {
+    "duration": 4, "bpm": 120, "loop": false, "seed": 7, "quality": "draft",
+    "formats": ["9x16", "1x1", "4x5", "16x9"],
+    "audio": { "music": "synth", "style": "minimal-tech", "key": "A minor", "sfx": true, "sfxDensity": "normal", "lufs": -14 }
+  },
+  "content_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "name": { "type": "string", "minLength": 1, "maxLength": 32, "description": "Wordmark text, set in the display font. Default: brand.name, else the title." },
+      "tagline": { "type": "string", "minLength": 1, "maxLength": 56, "description": "UI-font line under the name; masks in one beat after the lock. Wraps to at most 2 lines." },
+      "mark": {
+        "type": "object", "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "enum": ["logo", "monogram", "none"], "description": "logo = brand.logo through an iris; monogram = letters on the accent plate; none = the plate collapses into the full stop. Default: logo when the brand has one, else monogram." },
+          "text": { "type": "string", "minLength": 1, "maxLength": 3, "description": "Monogram letters. Default: the initials of the first two words of name." },
+          "crop": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number", "minimum": 0, "maximum": 1 }, "description": "logo only: [x, y, w, h] as fractions of the logo image: the symbol part, when the logo file also contains the name." },
+          "wordmark": { "type": "boolean", "default": true, "description": "logo only: false = the logo image already contains the name; it is drawn whole and no name is typeset." },
+          "radius": { "type": "number", "minimum": 0, "maximum": 0.5, "default": 0.22, "description": "Plate corner radius as a fraction of the mark side (match the logo's own square)." }
+        }
+      },
+      "layout": { "type": "string", "enum": ["auto", "row", "stack"], "default": "auto", "description": "Without an end card only (with one, the hero stack is used from the lock on). row = mark left of the name; stack = mark above it. auto = stack in 9x16, row elsewhere. Per format via overrides.<fmt>.content.layout." },
+      "dot": { "type": "boolean", "default": true, "description": "The accent full stop after the name; it drops on the sting's last beat." },
+      "lock": { "type": "integer", "minimum": 2, "maximum": 8, "default": 4, "description": "Beat of the lock hit (the audio logo's downbeat). The sting needs at least lock + 2 beats." },
+      "audioLogo": { "type": "string", "enum": ["riser-hit", "motif"], "default": "riser-hit", "description": "riser-hit = one riser into a thump on the lock; motif = a 1-bar accelerating tick figure into the thump. The synth music bed (one groove bar, then its final hit) sits under both." },
+      "endCard": {
+        "type": "object", "required": ["cta"], "additionalProperties": false,
+        "description": "Optional end card that continues the sting: the flush-left hero lockup the sting locked onto, and a full-width accent bottom band (every aspect) that grew out of the mark plate; the CTA is cut out of it, the URL types on, the CTA is pressed, and the field floods the frame on the last beat. Its beats come out of the film duration.",
+        "properties": {
+          "cta": { "type": "string", "minLength": 1, "maxLength": 28 },
+          "url": { "type": "string", "minLength": 1, "maxLength": 40 },
+          "beats": { "type": "integer", "minimum": 4, "maximum": 8, "default": 4, "description": "4 (default) keeps every beat busy; 8 adds a second CTA press so no stretch runs past one bar." }
+        }
+      }
+    }
+  },
+  "example": {
+    "title": "Studio sting",
+    "duration": 6,
+    "brand": {
+      "name": "reelcode",
+      "colors": { "bg": "#0C0C0D", "fg": "#F3F0E8", "accent": "#C8F23C" },
+      "fonts": {
+        "display": { "family": "\"Archivo Condensed\", sans-serif", "weight": 800, "tracking": -0.02 },
+        "ui": { "family": "\"JetBrains Mono\", monospace", "weight": 400, "tracking": 0.02 }
+      }
+    },
+    "content": {
+      "name": "reelcode",
+      "tagline": "One timeline. Every format.",
+      "mark": { "type": "monogram", "text": "RC" },
+      "lock": 4,
+      "audioLogo": "riser-hit",
+      "endCard": { "cta": "Start a film", "url": "reelcode.example", "beats": 4 }
+    }
+  }
+}

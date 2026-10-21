@@ -1,0 +1,61 @@
+# internal notes and agent tooling never belong in this repository
+CLAUDE.md
+INTEGRATION.md
+.claude/
+plans/
+discuss-*.md
+NOTES.md
+TODO.md
+*.local.md
+AGENTS.md
+.cursor/
+
+# dependencies and environments
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+
+# everything a project generates (make, prepare, capture)
+projects/*/out/
+projects/*/audio/
+projects/*/assets/*
+!projects/example-morph/assets/bed.py
+projects/*/docs/shotlist.local.md
+
+# test scratch projects and locks (engine/test/_names.mjs, _prepare.mjs)
+projects/_zz*/
+projects/zz-*/
+projects/_rxt-*/
+projects/_lintneg*/
+projects/_smoke-cli-*/
+projects/_plan-*/
+projects/.lock-*/
+brands/zz-*
+
+# your own projects stay local unless you add them on purpose
+projects/*
+!projects/example-*/
+!projects/_smoke/
+!projects/_smoke-ui/
+!projects/_media/
+
+# shared fixture media (fixtures/media/make_media.py renders and caches it)
+fixtures/media/*
+!fixtures/media/make_media.py
+
+# renders
+*.mp4
+*.mov
+*.webm
+*.wav
+*.flac
+
+# OS and editor litter
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

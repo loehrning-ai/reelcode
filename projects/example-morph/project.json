@@ -1,0 +1,135 @@
+{
+  "$schema": "../../docs/project.schema.json",
+  "template": "morph-loop",
+  "prepare": [
+    {"run": "./assets/bed.py", "creates": ["assets/bed.wav"]}
+  ],
+  "title": "Tallyport signup loop",
+  "duration": 14,
+  "brand": {
+    "name": "Tallyport",
+    "colors": {
+      "bg": "#EFEBE3",
+      "fg": "#16171B",
+      "accent": "#3D5AFE",
+      "muted": "#8B877E",
+      "surface": "#FFFFFF"
+    },
+    "fonts": {
+      "display": {
+        "family": "Archivo, sans-serif",
+        "weight": 700,
+        "tracking": -0.025
+      },
+      "ui": {
+        "family": "Inter, sans-serif",
+        "weight": 500,
+        "tracking": 0
+      }
+    },
+    "radius": 30
+  },
+  "content": {
+    "states": [
+      {
+        "kind": "card",
+        "title": "Monthly revenue",
+        "value": 48210,
+        "from": 30000,
+        "fmt": "money",
+        "delta": "+18%",
+        "caption": "Numbers that move",
+        "beats": 4,
+        "via": "lift"
+      },
+      {
+        "kind": "chart",
+        "title": "Active teams",
+        "data": [
+          {
+            "label": "Jan",
+            "value": 12
+          },
+          {
+            "label": "Feb",
+            "value": 19
+          },
+          {
+            "label": "Mar",
+            "value": 17
+          },
+          {
+            "label": "Apr",
+            "value": 28
+          },
+          {
+            "label": "May",
+            "value": 34
+          },
+          {
+            "label": "Jun",
+            "value": 47
+          }
+        ],
+        "highlight": 4,
+        "beats": 4
+      },
+      {
+        "kind": "tooltip",
+        "suffix": " teams",
+        "caption": "See who's growing",
+        "beats": 2
+      },
+      {
+        "kind": "menu",
+        "query": "export",
+        "items": [
+          "Export as CSV",
+          "Share report",
+          "Schedule email"
+        ],
+        "selected": 1,
+        "caption": "Everything is one key away",
+        "beats": 3
+      },
+      {
+        "kind": "notification",
+        "title": "Report shared",
+        "beats": 2
+      },
+      {
+        "kind": "button",
+        "label": "Start free",
+        "caption": "Sign up in one tap",
+        "beats": 2
+      },
+      {
+        "kind": "field",
+        "placeholder": "you@example.com",
+        "value": "maya@kestrelle.example",
+        "beats": 3,
+        "label": "Work email"
+      },
+      {
+        "kind": "loader",
+        "caption": "Workspace in seconds",
+        "beats": 2
+      },
+      {
+        "kind": "success",
+        "beats": 2
+      },
+      {
+        "kind": "logo",
+        "caption": "Try it free today",
+        "then": "Get started \u2192",
+        "beats": 4
+      }
+    ]
+  },
+  "audio": {
+    "music": "assets/bed.wav",
+    "musicStart": 0,
+    "fit": "trim"
+  }
+}

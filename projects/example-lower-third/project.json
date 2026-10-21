@@ -1,0 +1,28 @@
+{
+  "$schema": "../../docs/project.schema.json",
+  "template": "lower-third",
+  "prepare": [
+    {"run": "fixtures/media/make_media.py", "args": ["--out", "{project}/assets"], "creates": ["assets/ridge.jpg", "assets/harbor.jpg", "assets/canopy.jpg", "assets/ridge.webm"]}
+  ],
+  "title": "Tallyport Live lower thirds",
+  "formats": ["9x16", "1x1", "4x5", "16x9"],
+  "duration": 16,
+  "bpm": 120,
+  "brand": "@tallyport",
+  "transparent": true,
+  "exports": ["prores-alpha"],
+  "clips": { "ridge": { "src": "assets/ridge.webm", "from": 0, "to": 6, "fps": 30, "width": 1280 } },
+  "variants": [
+    { "id": "demo", "title": "Tallyport Live lower thirds (demo over footage)",
+      "overrides": { "content": { "demo": { "clip": "ridge", "from": 0, "rate": 0.375, "move": "push-in", "amount": 0.06, "focus": [0.56, 0.5] } } } }
+  ],
+  "content": {
+    "items": [
+      { "kind": "name", "beats": 6, "name": "Mara Lindqvist", "role": "Head of Product, Tallyport", "tag": "LIVE" },
+      { "kind": "topic", "beats": 8, "label": "TOPIC", "texts": ["Closing the books in three days", "Why finance teams quit spreadsheets"] },
+      { "kind": "name", "beats": 5, "side": "r", "name": "Jonas Brandt", "role": "CFO, Kestrelle Freight" },
+      { "kind": "quote", "beats": 7, "quote": "We closed Q3 in three days instead of twelve.", "author": "Jonas Brandt", "role": "CFO, Kestrelle Freight" },
+      { "kind": "title", "beats": "fill", "kicker": "TALLYPORT LIVE", "title": "Month-end, minus the mess", "sub": "Episode 12 · tallyport.app" }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "reelcode",
+  "owner": { "name": "loehrning.ai", "email": "tim@loehrning.ai", "url": "https://loehrning.ai" },
+  "metadata": { "description": "reelcode: a motion design studio your coding agent runs.", "version": "0.1.0" },
+  "plugins": [
+    {
+      "name": "reelcode",
+      "source": "./",
+      "description": "The reelcode workflow skill: inputs, shotlist, draft, critique loop to 8+, final, using the reelcode CLI.",
+      "version": "0.1.0",
+      "license": "MIT",
+      "homepage": "https://github.com/loehrning-ai/reelcode"
+    }
+  ]
+}

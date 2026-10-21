@@ -1,0 +1,93 @@
+{
+  "$schema": "../../docs/project.schema.json",
+  "template": "logo-sting",
+  "prepare": [
+    {"run": "templates/logo-sting/score.py", "args": ["{project}"], "creates": ["assets/score.wav"]},
+    {"run": "templates/logo-sting/score.py", "args": ["{project}", "--variant", "tallyport"], "creates": ["assets/score-tallyport.wav"]}
+  ],
+  "title": "Studio sting",
+  "formats": [
+    "9x16",
+    "1x1",
+    "4x5",
+    "16x9"
+  ],
+  "duration": 6,
+  "bpm": 120,
+  "brand": "@studio",
+  "transparent": true,
+  "exports": [
+    "prores-alpha"
+  ],
+  "content": {
+    "name": "reelcode",
+    "tagline": "One timeline. Every format.",
+    "mark": {
+      "type": "monogram",
+      "text": "RC"
+    },
+    "lock": 4,
+    "audioLogo": "riser-hit",
+    "endCard": {
+      "cta": "Start a film",
+      "url": "reelcode.example",
+      "beats": 4
+    }
+  },
+  "variants": [
+    {
+      "id": "tallyport",
+      "title": "Tallyport sting",
+      "overrides": {
+        "brand": "@tallyport",
+        "audio": {
+          "music": "assets/score-tallyport.wav",
+          "style": "punchy-pop",
+          "key": "C major"
+        },
+        "content": {
+          "name": "Tallyport",
+          "tagline": "Reports your team actually reads.",
+          "mark": {
+            "type": "logo",
+            "crop": [
+              0.0111,
+              0.0833,
+              0.2222,
+              0.8333
+            ],
+            "radius": 0.275
+          },
+          "audioLogo": "motif",
+          "endCard": {
+            "cta": "Try it free",
+            "url": "tallyport.app",
+            "beats": 4
+          }
+        }
+      }
+    }
+  ],
+  "cutdowns": [
+    {
+      "id": "sting",
+      "duration": 4,
+      "keep": [
+        "sting"
+      ]
+    },
+    {
+      "id": "endcard",
+      "duration": 2,
+      "keep": [
+        "endcard"
+      ]
+    }
+  ],
+  "audio": {
+    "music": "assets/score.wav",
+    "fit": "trim",
+    "sfx": true,
+    "lufs": -14
+  }
+}

@@ -1,0 +1,355 @@
+{
+  "id": "morph-loop",
+  "description": "One container that never cuts: it morphs size, radius and fill through 3-12 UI states (card, chart, tooltip, menu, notification, button, field, loader, success, logo lockup) with push / lift / dot / cut / blur changes, driven by a cursor, as a seamless loop that ends on a full-bleed lockup.",
+  "requires": [],
+  "defaults": {
+    "duration": 14,
+    "bpm": 120,
+    "loop": true,
+    "seed": 7,
+    "quality": "draft",
+    "formats": [
+      "9x16",
+      "1x1",
+      "4x5",
+      "16x9"
+    ],
+    "audio": {
+      "music": "synth",
+      "style": "minimal-tech",
+      "key": "A minor",
+      "sfx": true,
+      "sfxDensity": "normal",
+      "lufs": -14
+    }
+  },
+  "content_schema": {
+    "type": "object",
+    "required": [
+      "states"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "states": {
+        "type": "array",
+        "minItems": 3,
+        "maxItems": 12,
+        "description": "The UI states in loop order. The last state morphs back into the first.",
+        "items": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "button",
+                "field",
+                "loader",
+                "success",
+                "card",
+                "chart",
+                "tooltip",
+                "menu",
+                "notification",
+                "logo"
+              ]
+            },
+            "caption": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 48,
+              "description": "Display line under the container (9:16, 4:5, 1:1) or in the side column (16:9); it persists until the next state that sets one. On a logo it is the lockup tagline."
+            },
+            "beats": {
+              "type": "number",
+              "minimum": 2,
+              "maximum": 16,
+              "description": "Relative length of this state; all states are scaled to the project length on whole beats."
+            },
+            "fill": {
+              "type": "string",
+              "enum": [
+                "surface",
+                "accent",
+                "fg",
+                "bg",
+                "muted"
+              ]
+            },
+            "anchor": {
+              "type": "string",
+              "enum": [
+                "c",
+                "n",
+                "s",
+                "e",
+                "w",
+                "nw",
+                "ne",
+                "sw",
+                "se"
+              ],
+              "description": "Where the container rests in the stage. In 16:9 only the horizontal part is used."
+            },
+            "then": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24,
+              "description": "logo: the CTA pill label; it pops on beat 2 and the cursor taps it on beat 3."
+            },
+            "trigger": {
+              "type": "string",
+              "enum": [
+                "click",
+                "hover",
+                "auto"
+              ],
+              "description": "How the cursor leaves this state."
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24,
+              "description": "button text, or logo wordmark (defaults to brand.name)."
+            },
+            "placeholder": {
+              "type": "string",
+              "maxLength": 32
+            },
+            "value": {
+              "type": [
+                "string",
+                "number"
+              ],
+              "description": "field: the text typed; card: the number counted to."
+            },
+            "from": {
+              "type": "number"
+            },
+            "fmt": {
+              "type": "string",
+              "enum": [
+                "int",
+                "pct",
+                "money",
+                "k",
+                "x"
+              ]
+            },
+            "decimals": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3
+            },
+            "prefix": {
+              "type": "string",
+              "maxLength": 4
+            },
+            "suffix": {
+              "type": "string",
+              "maxLength": 6
+            },
+            "delta": {
+              "type": "string",
+              "maxLength": 10
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            "body": {
+              "type": "string",
+              "maxLength": 40
+            },
+            "query": {
+              "type": "string",
+              "maxLength": 28
+            },
+            "items": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 5,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 24
+              }
+            },
+            "selected": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "data": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 12,
+              "items": {
+                "type": "object",
+                "required": [
+                  "label",
+                  "value"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                }
+              }
+            },
+            "highlight": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 11
+            },
+            "via": {
+              "type": "string",
+              "enum": [
+                "push",
+                "lift",
+                "dot",
+                "cut",
+                "blur"
+              ],
+              "description": "How the container changes INTO this state. Defaults per kind: card/chart/field push, tooltip/loader/success cut, menu blur, notification lift (from a menu), button/logo dot."
+            }
+          }
+        }
+      }
+    }
+  },
+  "example": {
+    "title": "Tallyport signup loop",
+    "brand": {
+      "name": "Tallyport",
+      "colors": {
+        "bg": "#EFEBE3",
+        "fg": "#16171B",
+        "accent": "#3D5AFE",
+        "muted": "#8B877E",
+        "surface": "#FFFFFF"
+      },
+      "fonts": {
+        "display": {
+          "family": "Archivo, sans-serif",
+          "weight": 700,
+          "tracking": -0.025
+        },
+        "ui": {
+          "family": "Inter, sans-serif",
+          "weight": 500,
+          "tracking": 0
+        }
+      },
+      "radius": 30
+    },
+    "content": {
+      "states": [
+        {
+          "kind": "card",
+          "title": "Monthly revenue",
+          "value": 48210,
+          "from": 30000,
+          "fmt": "money",
+          "delta": "+18%",
+          "caption": "Numbers that move",
+          "beats": 4,
+          "via": "lift"
+        },
+        {
+          "kind": "chart",
+          "title": "Active teams",
+          "data": [
+            {
+              "label": "Jan",
+              "value": 12
+            },
+            {
+              "label": "Feb",
+              "value": 19
+            },
+            {
+              "label": "Mar",
+              "value": 17
+            },
+            {
+              "label": "Apr",
+              "value": 28
+            },
+            {
+              "label": "May",
+              "value": 34
+            },
+            {
+              "label": "Jun",
+              "value": 47
+            }
+          ],
+          "highlight": 4,
+          "beats": 4
+        },
+        {
+          "kind": "tooltip",
+          "suffix": " teams",
+          "caption": "See who's growing",
+          "beats": 2
+        },
+        {
+          "kind": "menu",
+          "query": "export",
+          "items": [
+            "Export as CSV",
+            "Share report",
+            "Schedule email"
+          ],
+          "selected": 1,
+          "caption": "Everything is one key away",
+          "beats": 3
+        },
+        {
+          "kind": "notification",
+          "title": "Report shared",
+          "beats": 2
+        },
+        {
+          "kind": "button",
+          "label": "Start free",
+          "caption": "Sign up in one tap",
+          "beats": 2
+        },
+        {
+          "kind": "field",
+          "placeholder": "you@example.com",
+          "value": "maya@kestrelle.example",
+          "beats": 3,
+          "label": "Work email"
+        },
+        {
+          "kind": "loader",
+          "caption": "Workspace in seconds",
+          "beats": 2
+        },
+        {
+          "kind": "success",
+          "beats": 2
+        },
+        {
+          "kind": "logo",
+          "caption": "Try it free today",
+          "then": "Get started \u2192",
+          "beats": 4
+        }
+      ]
+    }
+  }
+}

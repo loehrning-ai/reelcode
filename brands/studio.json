@@ -1,0 +1,10 @@
+{
+  "id": "studio",
+  "description": "The studio's own look (reelcode reels): near-black, warm white, acid-lime accent.",
+  "name": "reelcode",
+  "colors": { "bg": "#0C0C0D", "fg": "#F3F0E8", "accent": "#C8F23C" },
+  "fonts": {
+    "display": { "family": "\"Archivo Condensed\", sans-serif", "weight": 800, "tracking": -0.02 },
+    "ui": { "family": "\"JetBrains Mono\", monospace", "weight": 400, "tracking": 0.02 }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "_smoke-ui",
+  "description": "Runtime proof for the UI blocks: a bleed statement, a captured screen that assembles, punches in and gets clicked, a labelled shot, a step and a logo end card.",
+  "requires": ["screens", "logo"],
+  "defaults": {
+    "duration": 12, "bpm": 120, "loop": false, "seed": 7, "quality": "draft",
+    "formats": ["9x16", "1x1", "16x9"],
+    "audio": { "music": "synth", "style": "minimal-tech", "key": "A minor", "sfx": true, "sfxDensity": "normal", "lufs": -14 }
+  },
+  "content_schema": {
+    "type": "object", "required": ["statement", "shot", "detail", "step", "cta"], "additionalProperties": false,
+    "properties": {
+      "statement": { "type": "object", "required": ["text"], "properties": { "text": { "type": "string", "minLength": 1, "maxLength": 16 }, "sub": { "type": "string" } } },
+      "shot": { "type": "object", "required": ["screen"], "properties": { "screen": { "type": "string" }, "pieces": { "type": "array", "items": { "type": "string" } }, "zoom": { "type": "string" }, "click": { "type": "string" } } },
+      "detail": { "type": "object", "required": ["screen", "label"], "properties": { "screen": { "type": "string" }, "label": { "type": "string" }, "zoom": { "type": "string" } } },
+      "step": { "type": "object", "required": ["title"], "properties": { "title": { "type": "string" }, "body": { "type": "string" } } },
+      "cta": { "type": "object", "required": ["name", "text"], "properties": { "name": { "type": "string" }, "text": { "type": "string" }, "url": { "type": "string" } } }
+    }
+  },
+  "example": {
+    "title": "UI smoke test",
+    "brand": {
+      "name": "Tallyport",
+      "colors": { "bg": "#0F1012", "fg": "#F2F0EA", "accent": "#3D5AFE" },
+      "fonts": {
+        "display": { "family": "\"Archivo Condensed\", sans-serif", "weight": 800, "tracking": -0.03 },
+        "ui": { "family": "\"JetBrains Mono\", monospace", "weight": 400, "tracking": 0.02 }
+      },
+      "logo": "assets/logo.png"
+    },
+    "content": {
+      "statement": { "text": "SHIP IT", "sub": "Numbers your team trusts" },
+      "shot": { "screen": "home", "pieces": ["kpi-1", "kpi-2", "kpi-3", "chart"], "zoom": "kpi-2", "click": "export" },
+      "detail": { "screen": "report", "label": "Reports in one click", "zoom": "report-chart" },
+      "step": { "title": "Export anywhere", "body": "CSV, PDF or a live link." },
+      "cta": { "name": "Tallyport", "text": "Start free", "url": "tallyport.example" }
+    }
+  }
+}

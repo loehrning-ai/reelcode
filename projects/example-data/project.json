@@ -1,0 +1,238 @@
+{
+  "$schema": "../../docs/project.schema.json",
+  "template": "data-story",
+  "prepare": [
+    {"run": "templates/data-story/score.py", "args": ["{plan}", "--out", "assets/score.flac"], "creates": ["assets/score.flac"], "plan": {"audio": {"music": "synth", "style": "ambient-cinematic", "key": "D minor"}}}
+  ],
+  "title": "Harbor City bike share (sample data)",
+  "duration": 20,
+  "audio": { "music": "assets/score.flac", "sfx": true, "sfxDensity": "normal", "lufs": -14 },
+  "brand": {
+    "name": "Harbor City Mobility Lab",
+    "colors": {
+      "bg": "#0F1417",
+      "fg": "#EEEAE2",
+      "accent": "#FFB341"
+    },
+    "fonts": {
+      "display": {
+        "family": "\"Archivo Condensed\", sans-serif",
+        "weight": 700,
+        "tracking": -0.02
+      },
+      "ui": {
+        "family": "Inter, sans-serif",
+        "weight": 500,
+        "tracking": 0.01
+      }
+    }
+  },
+  "content": {
+    "locale": "en-US",
+    "kicker": "SAMPLE",
+    "title": "Harbor City bike share, 2021–2025",
+    "hero": {
+      "value": 4218500,
+      "from": 1600000,
+      "fmt": "compact",
+      "decimals": 1,
+      "fromLabel": 2021,
+      "toLabel": 2025,
+      "label": "bike-share trips",
+      "accent": "trips"
+    },
+    "points": [
+      {
+        "type": "race",
+        "claim": "Riverside overtook the old centre",
+        "accent": "Riverside",
+        "unit": "k",
+        "keys": [
+          "Old Town",
+          "Riverside",
+          "Docklands",
+          "Northgate",
+          "Hillcrest"
+        ],
+        "highlight": "Riverside",
+        "frames": [
+          {
+            "label": 2021,
+            "values": [
+              520,
+              310,
+              260,
+              300,
+              180
+            ]
+          },
+          {
+            "label": 2022,
+            "values": [
+              560,
+              430,
+              330,
+              320,
+              210
+            ]
+          },
+          {
+            "label": 2023,
+            "values": [
+              590,
+              560,
+              410,
+              340,
+              250
+            ]
+          },
+          {
+            "label": 2024,
+            "values": [
+              610,
+              690,
+              480,
+              350,
+              300
+            ]
+          },
+          {
+            "label": 2025,
+            "values": [
+              630,
+              820,
+              560,
+              370,
+              340
+            ]
+          }
+        ]
+      },
+      {
+        "type": "line",
+        "claim": "Weekly riders climbed all year",
+        "accent": "climbed",
+        "fmt": "compact",
+        "drawBeats": 6,
+        "data": [
+          {
+            "x": "Jan",
+            "y": 52000
+          },
+          {
+            "x": "Feb",
+            "y": 55000
+          },
+          {
+            "x": "Mar",
+            "y": 64000
+          },
+          {
+            "x": "Apr",
+            "y": 71000
+          },
+          {
+            "x": "May",
+            "y": 79000
+          },
+          {
+            "x": "Jun",
+            "y": 86000
+          },
+          {
+            "x": "Jul",
+            "y": 78000
+          },
+          {
+            "x": "Aug",
+            "y": 84000
+          },
+          {
+            "x": "Sep",
+            "y": 90000
+          },
+          {
+            "x": "Oct",
+            "y": 99000
+          },
+          {
+            "x": "Nov",
+            "y": 101000
+          },
+          {
+            "x": "Dec",
+            "y": 104000
+          }
+        ],
+        "annotations": [
+          {
+            "at": "Mar",
+            "text": "Protected lanes open"
+          },
+          {
+            "at": "Jul",
+            "text": "Heatwave dip"
+          },
+          {
+            "at": "Oct",
+            "text": "Student pass"
+          }
+        ]
+      },
+      {
+        "type": "compare",
+        "claim": "E-bike trips run longer",
+        "accent": "longer",
+        "decimals": 1,
+        "unit": " km",
+        "items": [
+          {
+            "label": "E-bike",
+            "value": 5.8
+          },
+          {
+            "label": "Classic",
+            "value": 2.4
+          }
+        ],
+        "delta": "ratio",
+        "deltaLabel": "longer per trip"
+      },
+      {
+        "type": "bars",
+        "claim": "The morning peak carries the load",
+        "accent": "morning",
+        "highlight": "6–9",
+        "data": [
+          {
+            "label": "6–9",
+            "value": 1240
+          },
+          {
+            "label": "9–12",
+            "value": 610
+          },
+          {
+            "label": "12–15",
+            "value": 540
+          },
+          {
+            "label": "15–18",
+            "value": 980
+          },
+          {
+            "label": "18–21",
+            "value": 720
+          },
+          {
+            "label": "21–24",
+            "value": 260
+          }
+        ]
+      }
+    ],
+    "takeaway": "Build the lanes and the riders follow.",
+    "takeawayAccent": "riders",
+    "source": "Source: fictional sample data. Harbor City is not a real place."
+  }
+}
