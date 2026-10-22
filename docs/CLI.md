@@ -84,7 +84,7 @@ format. Open those page URLs; the server root has no index. `--open` opens the f
 
 ## test
 ```
-npx reelcode test [--node | --py] [--concurrency N] [file ...]
+npx reelcode test [--node | --py] [--concurrency N] [file ...]   # the full run takes about 9 minutes; pass --node or a file for a quick check
 ```
 
 ## Environment variables

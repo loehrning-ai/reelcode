@@ -34,7 +34,8 @@ runCli(USAGE, async () => {
   const formats = pickFormats(P, a.formats || a.format);
   const range = a.from !== undefined || a.to !== undefined;
   const srv = await startServer();
-  const browser = await launch();
+  let browser;
+  try { browser = await launch(); } catch (e) { await srv.close(); throw e; }
   try {
     const one = (format) => (range
       ? renderRange({ P, format, q, quality, base: srv.base, browser, from: a.from, to: a.to, cacheDir: join(P.outDir(), '.cache', format) })

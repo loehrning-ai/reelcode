@@ -252,7 +252,12 @@ export async function exportPresets({ P, format, video, silent, quality = 'draft
   let own = null;
   const env = async () => {
     if (base && browser) return { base, browser };
-    if (!own) { const srv = await startServer(); own = { srv, base: srv.base, browser: await launch() }; }
+    if (!own) {
+      const srv = await startServer();
+      // a failed browser launch must not leave the server listening: it would keep the process alive
+      let b; try { b = await launch(); } catch (e) { await srv.close(); throw e; }
+      own = { srv, base: srv.base, browser: b };
+    }
     return own;
   };
   const done = [];

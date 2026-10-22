@@ -23,7 +23,7 @@ same project renders the same film every time.
 
 ## Quickstart
 
-macOS or Linux, with Node 20+ (22 LTS recommended), ffmpeg and Python 3.12+ (or [uv](https://docs.astral.sh/uv/), which brings its
+macOS or Linux, with Node 20+ (CI runs 22; also run locally on 26), ffmpeg and Python 3.12+ (or [uv](https://docs.astral.sh/uv/), which brings its
 own Python):
 
 ```sh
@@ -38,9 +38,10 @@ or `sudo apt-get install -y ffmpeg`. `npx reelcode doctor` tells you what is mis
 
 Plan for about 1.2 GB of disk. The first `setup` downloads Playwright's Chromium (about 570 MB in Playwright's browser
 cache) and the Python audio stack (numpy, scipy, librosa, numba: about 290 MB in `.venv/`, plus a similar amount in the
-uv or pip cache). With empty caches on a fast connection it took 46 s; on a slow line expect a few minutes. Reruns skip
+uv or pip cache). Setup took about 30 s with warm caches; with empty caches expect a minute or two on a fast line and longer on a slow one. Reruns skip
 finished steps and take seconds. On a bare Linux box, `npx reelcode setup --with-deps` also installs Chromium's system libraries (sudo).
-The first `make example-showreel` renders four formats of a 16 s film and takes about two minutes on a laptop.
+The first `make example-showreel` renders four formats of a 16 s film and takes two to three minutes on a laptop.
+Linux gets the same code path and a CI job on `ubuntu-latest`, but the maintainer has only run it on macOS so far; if a command fails on your distro, `npx reelcode doctor` output in an issue is the fastest fix.
 
 Make your own:
 

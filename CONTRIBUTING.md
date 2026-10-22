@@ -14,7 +14,8 @@ npx reelcode doctor       # every check should say ok
 ## Before you open a pull request
 
 ```sh
-npx reelcode test                       # node --test engine/test/ and the Python audio suite
+npx reelcode test                       # node --test engine/test/ and the Python audio suite (about 9 min on a laptop)
+npx reelcode test --node                # the faster half, for a quick check
 npx reelcode lint <project>             # for any project or template you touched
 ```
 

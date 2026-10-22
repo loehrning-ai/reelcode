@@ -37,7 +37,7 @@ runCli(USAGE, async () => {
     // render tests are CPU heavy (Chromium + ffmpeg each); half the cores keeps them from starving one another
     const conc = a.concurrency || Math.max(1, Math.floor(cpus().length / 2));
     console.log(`\nnode --test (${files.length} files, concurrency ${conc})`);
-    if (shLive(process.execPath, ['--test', `--test-concurrency=${conc}`, ...files]) !== 0) failed++;
+    if (shLive(process.execPath, ['--test', `--test-concurrency=${conc}`, '--test-timeout=900000', ...files]) !== 0) failed++;
   }
   if (!a.node && !a._.length) {
     console.log('\npython audio tests');
