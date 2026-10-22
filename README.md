@@ -40,7 +40,7 @@ Plan for about 1.2 GB of disk. The first `setup` downloads Playwright's Chromium
 cache) and the Python audio stack (numpy, scipy, librosa, numba: about 290 MB in `.venv/`, plus a similar amount in the
 uv or pip cache). Setup took about 30 s with warm caches; with empty caches expect a minute or two on a fast line and longer on a slow one. Reruns skip
 finished steps and take seconds. On a bare Linux box, `npx reelcode setup --with-deps` also installs Chromium's system libraries (sudo).
-The first `make example-showreel` renders four formats of a 16 s film and takes two to three minutes on a laptop.
+The first `make example-showreel` renders four formats of a 16 s film and takes about two to four minutes on a laptop (more if the machine is busy).
 Linux gets the same code path and a CI job on `ubuntu-latest`, but the maintainer has only run it on macOS so far; if a command fails on your distro, `npx reelcode doctor` output in an issue is the fastest fix.
 
 Make your own:

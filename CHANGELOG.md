@@ -7,6 +7,9 @@ All notable changes to this project are documented here. The format follows
 
 First public release.
 
+### Fixed
+- A failed Chromium launch no longer leaves the preview server listening, so a missing browser fails fast instead of hanging. `reelcode test` now caps each test at 15 minutes.
+
 ### Added
 - One CLI, `reelcode`: `setup`, `doctor`, `new`, `templates`, `make`, `render`, `lint`, `stills`, `capture`, `preview`, `test`.
   `templates` lists the eight user templates; `--all` also shows the internal test ones.
