@@ -1,22 +1,62 @@
 <h1 align="center">reelcode</h1>
 
-<p align="center"><b>Motion films from a JSON file, rendered in headless Chromium, in four aspect ratios, with synthesized music and sound effects cut on the beat. Meant to be driven by a coding agent.</b></p>
+<p align="center"><b>Write a JSON file. Get a 15 s motion film with music, in 9:16, 1:1, 4:5 and 16:9, rendered from one timeline in headless Chromium. Built to be run by a coding agent.</b></p>
 
 <p align="center">
-  <img src="docs/media/hero.gif" width="888" alt="One reelcode timeline rendering as 9:16, 1:1, 4:5 and 16:9 side by side, frame for frame">
+  <img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-blue">
+  <img alt="Node 20+" src="https://img.shields.io/badge/node-20%2B-339933">
+  <img alt="macOS: tested" src="https://img.shields.io/badge/macOS-tested-brightgreen">
+  <img alt="Linux: CI only" src="https://img.shields.io/badge/Linux-CI%20only-yellow">
+  <img alt="Windows: not supported" src="https://img.shields.io/badge/Windows-no-lightgrey">
 </p>
-<p align="center"><sub>One timeline, four formats. GIFs are silent and smear mid-transition frames:
-<a href="docs/media/showreel-1x1.mp4"><b>hear it, 16 s with sound (1.9 MB MP4)</b></a>.</sub></p>
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+`projects/example-showreel/project.json` (excerpt)
+
+```json
+{
+  "template": "showreel",
+  "brand": { "name": "reelcode",
+    "colors": { "bg": "#0C0C0D",
+      "fg": "#F3F0E8", "accent": "#C8F23C" } },
+  "content": { "shots": [
+    { "technique": "scale", "beats": 2,
+      "text": "ON THE BEAT" },
+    { "technique": "kinetic", "beats": 3,
+      "lines": ["WE MAKE", "TYPE MOVE"],
+      "accent": "MOVE" } ] }
+}
+```
+
+</td>
+<td width="50%" valign="top">
+
+<img src="docs/media/hero-1x1.gif" width="440" alt="The first eight seconds of the showreel film rendered from that project: kinetic type on lime and black, cut on the beat">
+
+</td>
+</tr>
+</table>
+
+<p align="center"><a href="docs/media/showreel-1x1.mp4"><b>Watch it with sound (16 s, 1.9 MB MP4)</b></a><br>
+<sub>The whole film, music and sound effects included, came out of one <code>project.json</code>. The GIF is silent.</sub></p>
+
+**What it is:** a command-line renderer with eight film templates, a music and sound-effect synthesizer, and a critique loop
+for coding agents. **What it is not:** a video editor, a GUI, a Remotion replacement, or a free-form timeline.
 
 ## Try it
-
-First run downloads about 1.2 GB (Chromium and a Python audio stack) and takes two to four minutes. Needs Node 20+,
-ffmpeg, and Python 3.12+ or [uv](https://docs.astral.sh/uv/). Final renders are slow: about 20 minutes for four formats.
 
 ```sh
 git clone https://github.com/loehrning-ai/reelcode && cd reelcode
 npm install && npx reelcode setup && npx reelcode make example-showreel --formats 1x1
 ```
+
+Honest cost: the first run downloads about 1.2 GB (Chromium and a Python audio stack) and takes two to four minutes. It
+needs Node 20+, ffmpeg and Python 3.12+ or [uv](https://docs.astral.sh/uv/); `npx reelcode doctor` checks them before the
+big download. The 1:1 draft above took **51 s** on an Apple Silicon laptop with no cached segments. All four formats take
+a few minutes; 60 fps finals take about 20 minutes ([timings](docs/REQUIREMENTS.md)).
 
 The last command ends like this (`npx` runs the copy inside the clone, nothing comes from the npm registry):
 
@@ -27,44 +67,42 @@ make: lint: --fast on 1x1
 lint: pass  manifest: projects/example-showreel/out/manifest.json
 ```
 
-Open `draft.mp4` (with sound) and `contact.png` next to it. Drop `--formats 1x1` to render all four formats.
-More detail, Linux notes and timings: [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md).
+Open `draft.mp4` (with sound) and `contact.png` next to it. This is the contact sheet the agent critiques:
 
-**Status:** 0.1, tested on macOS (Apple Silicon). Linux runs in CI but is untested by hand. Windows is not supported.
+<p align="center"><img src="docs/media/contact-example.jpg" width="420" alt="contact.png: a grid of frames sampled across the film, used for critique"></p>
+
+**Status:** 0.1, verified on macOS (Apple Silicon). Linux runs in CI but is untested by hand. Windows is not supported.
 
 ## Why
 
 - **Audio comes from the timeline.** `music.py` writes the track and an exact beat grid; sound effects are derived from the
-  scene cues and land within 10 ms of the 1/16 grid; every mix is measured at -14 LUFS (true peak <= -1 dBTP).
-  The music is synthesized by your run, so it is yours to publish.
+  scene cues, and the mix is measured at -14 LUFS. The music is synthesized by your run, so it is yours to publish.
+  Commands and printed output: [docs/VERIFY.md](docs/VERIFY.md).
 - **One timeline, four formats.** 9:16, 1:1, 4:5 and 16:9 share one timeline and one mix, with per-format layouts and safe areas.
 - **Pure `fn(t)` rendering with a determinism lint.** `reelcode lint` re-seeks frames forwards, backwards and on a fresh page
   and compares hashes. Same project and same machine setup give the same pixels ([FAQ](docs/FAQ.md)).
 
 Why not [Remotion](https://www.remotion.dev)? It is a mature video framework for people who write React, with a far larger
-ecosystem. reelcode is narrower: a studio a coding agent runs, with music, sound design and loudness built in
+ecosystem. reelcode is narrower: templated films a coding agent runs, with music, sound design and loudness built in
 ([comparison](docs/COMPARISON.md)).
+
+One timeline in four formats, silent:
+
+<p align="center"><img src="docs/media/hero.gif" width="888" alt="One reelcode timeline rendering as 9:16, 1:1, 4:5 and 16:9 side by side, frame for frame"></p>
 
 ## Ask your agent
 
-reelcode ships as a plugin for Claude Code. **The plugin teaches the agent the workflow; the engine lives in your clone.**
-
-One paste that does the clone, the setup and a first film:
-
-```text
-Clone https://github.com/loehrning-ai/reelcode, run npx reelcode setup, then make example-showreel and show me the contact sheet.
-```
-
-Then add the plugin and ask for your own film:
+reelcode ships as a plugin for Claude Code. **The plugin teaches the agent the workflow; the engine lives in your clone,
+so start the agent inside the clone.**
 
 ```text
+git clone https://github.com/loehrning-ai/reelcode && cd reelcode && npm install && npx reelcode setup
 /plugin marketplace add loehrning-ai/reelcode
 /plugin install reelcode@reelcode
+> Make a 15 second launch film for our analytics app in 9:16 and 16:9.
 ```
 
-> Make a 15 second launch film for our analytics app in 9:16 and 16:9.
-
-Codex, Cursor and other agents follow the same workflow without a plugin:
+Codex, Cursor and other agents follow the same workflow without a plugin. Paste this into the agent:
 
 ```text
 Read docs/AGENTS_GUIDE.md, then make a 15 s launch film for <product> in 9:16 and 16:9.
@@ -89,7 +127,7 @@ npx reelcode make q3-numbers                              # draft of every forma
 npx reelcode make q3-numbers --quality final              # 60 fps with motion blur: slow
 ```
 
-Every command prints its flags with `--help`.
+Every command prints its flags with `--help`. Made something? Post it with `#reelcode`.
 
 ## Templates
 
@@ -122,11 +160,11 @@ The idea is `film = fn(t)`: a frame depends only on `t`, so `seek(t)` in gives e
 flowchart LR
   P[project.json] --> R[page in headless Chromium]
   T[template scene.js] --> R
-  A[music.py: synth track + exact beats.json] --> R
+  A[music.py: synth track + beats.json] --> R
   R -- "seek(t) for every frame" --> F[PNG frames]
   F --> E[ffmpeg: motion blur, 1 s segment cache, H.264]
   R -- "timeline cues" --> S[sfx.py + cues.py: hits on the 1/16 grid]
-  A --> M[mix.py: −14 LUFS, ≤ −1 dBTP]
+  A --> M[mix.py: loudness mix]
   S --> M
   E --> O["out/9x16 · 1x1 · 4x5 · 16x9"]
   M --> O

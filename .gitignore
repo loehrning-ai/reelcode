@@ -59,3 +59,4 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+!docs/media/*.mp4
