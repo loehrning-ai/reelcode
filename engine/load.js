@@ -31,3 +31,18 @@ export async function resolveForPage(project, template, format, { variant, cutdo
   if (r.errors.length) throw new Error(r.errors.join('\n'));
   return r;
 }
+
+/**
+ * Load project.fonts (font files inside the project) into document.fonts before the first frame, so brand.fonts can
+ * name them like a bundled family. A file that does not load is an error: a film in the wrong typeface is a wrong film.
+ */
+export async function loadProjectFonts(name, fonts) {
+  if (!Array.isArray(fonts)) return [];
+  return Promise.all(fonts.map(async (f, i) => {
+    const url = `/projects/${name}/${f.file.split('/').map(encodeURIComponent).join('/')}`;
+    const face = new FontFace(f.family, `url("${url}")`, { weight: String(f.weight ?? 400), style: f.style || 'normal', display: 'block' });
+    try { await face.load(); } catch (e) { throw new Error(`project.fonts[${i}]: ${f.file} did not load as "${f.family}" (${e && e.message ? e.message : e})`); }
+    document.fonts.add(face);
+    return face;
+  }));
+}

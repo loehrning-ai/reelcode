@@ -24,6 +24,7 @@ template's own `content_schema`. Everything you leave out comes from the templat
 | `title` | string | Required. Used in manifests and as the default for title content. |
 | `formats` | array | Required. Any of `9x16`, `1x1`, `4x5`, `16x9`. |
 | `brand` | object or `"@id"` | Required. Colours, fonts, logo, radius, springs; or a preset from `brands/`, optionally `{extends: "@id", ...}`. |
+| `fonts` | array | Font files of this project with their licence, so the brand can use its own typeface (below). |
 | `duration` | number | Seconds, snapped to whole bars at the project's `bpm`. Shared by every format. |
 | `bpm` | number | Tempo of the beat grid (and of synth music). |
 | `loop` | boolean | A seamless loop: the last frame leads into the first and the audio wraps. |
@@ -57,8 +58,28 @@ template's own `content_schema`. Everything you leave out comes from the templat
 }
 ```
 Bundled font families: `Archivo`, `Archivo Condensed`, `Archivo Expanded`, `Inter`, `JetBrains Mono`, `Jost`,
-`Space Grotesk`. Any other family must be installed on the machine that renders. `multiAccent: true` unlocks
-`colors.accent2`.
+`Space Grotesk`. Any other family comes from `fonts` (below) or must be installed on the machine that renders.
+`multiAccent: true` unlocks `colors.accent2`.
+
+### `fonts`
+```json
+"fonts": [
+  { "family": "Brand Sans", "file": "assets/fonts/BrandSans-Variable.woff2", "weight": "100 900", "licence": "OFL-1.1" }
+],
+"brand": { "fonts": { "display": { "family": "\"Brand Sans\", sans-serif", "weight": 800 }, "ui": { "family": "Inter, sans-serif" } } }
+```
+| Field | Meaning |
+|---|---|
+| `family` | The name `brand.fonts.*.family` uses. |
+| `file` | A `woff2`, `woff`, `ttf` or `otf` file inside the project. `assets/` is git-ignored, so a font you may not redistribute stays out of the repository. |
+| `weight` | `400`, or a range for a variable font (`"100 900"`). Default 400. |
+| `style` | `normal` (default) or `italic`. |
+| `licence` | Required. The licence that allows rendering the font into video: an SPDX id (`OFL-1.1`) or a short statement. |
+
+Each file loads before the first frame; one that does not load is a boot error, and lint reports a missing file.
+`make` writes every entry with its licence and the file's sha256 into `out/manifest.json`. `fonts` is shared by
+every format and cannot be overridden per format. Check your font licence before you publish a film: many
+commercial desktop licences do not cover video.
 
 ### `audio`
 | Field | Values |

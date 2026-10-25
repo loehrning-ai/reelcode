@@ -140,7 +140,7 @@ a draft as the final.
 
 | Symptom | Fix |
 |---|---|
-| `font missing: display "<family>"` | Use a bundled family or install the font; quote families with spaces. |
+| `font missing: display "<family>"` | Use a bundled family, add the file to `project.fonts` with its licence, or install the font; quote families with spaces. |
 | `timeline: scenes sum to X beats, project needs Y` | Fix the scene beats, or make exactly one scene `"fill"`. |
 | `N generated file(s) missing ... run make once` | Run `npx reelcode make <project>`; it runs the project's `prepare` steps. |
 | `... is invalid (N problems)` | Each line names a JSON path; the allowed values are in the template README. |

@@ -71,8 +71,33 @@ npx reelcode stills <project> [--format F|all] [--sheet contact,phone,strip,seam
 npx reelcode capture <fixture:name | http://127.0.0.1:PORT/... | http://localhost:PORT/... | page.html> <project>
                      [--states a,b] [--routes a=/x,b=/y] [--selectors id=css,...] [--w 1440 --h 900 --dpr 2]
                      [--no-full] [--no-crops] [--apply-brand] [--brand-preset id]
+                     [--wait-for css|state=css,...] [--wait-timeout ms] [--warm]
+                     [--scroll css|state=css,...] [--scroll-offset px] [--hide css]
 ```
 Only local targets are accepted, and every request outside the target origin is blocked.
+
+For apps that render in the browser (React, Next.js, Vue):
+
+| Flag | What it does |
+|---|---|
+| `--wait-for <css>` | Waits until the element is visible before the screenshot. One selector for every state, or `state=css` pairs. Capture fails if it never shows. |
+| `--wait-timeout <ms>` | How long `--wait-for` (and `--warm`'s network idle) may take. Default 30000. |
+| `--warm` | Loads every state twice. The first visit fills the cache, so the screenshot uses fonts that a cold visit skips (`font-display: optional`). |
+| `--scroll <css>` | Scrolls the state to the element. One selector for every state, or `state=css` pairs. Capture fails if it matches nothing. |
+| `--scroll-offset <px>` | CSS pixels kept above the scroll target, for a sticky header. Default 0. |
+| `--hide <css>` | Removes matching elements (`display: none`) before the screenshot: dev badges, cookie banners, chat widgets. |
+
+```sh
+npx reelcode capture http://localhost:3000/ my-reel \
+  --routes home=/,pricing=/pricing --selectors 'title=main h1,plans=section#plans' \
+  --warm --wait-for 'pricing=section#plans' --scroll 'pricing=section#plans' --scroll-offset 96 --hide nextjs-portal
+```
+A screen's rects are clipped to the screenshot; an element scrolled out of view keeps its crop but has no rect on
+that screen, and a scrolled screen records `scroll: {x, y}` (screenshot pixels) in `assets.json`. The same recipe can
+live in `project.json` under `content.capture` (templates that allow it, such as `showreel`):
+`{states, routes, selectors, viewport, fullPage, crops, waitFor, waitTimeout, warm, scroll, scrollOffset, hide}`.
+A flag wins over the same key in the recipe. For a Next.js dev server use `http://localhost:PORT`, not
+`127.0.0.1`: Next serves its dev resources to `localhost` only, so the client-rendered parts would never mount.
 
 ## preview
 ```

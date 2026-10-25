@@ -243,6 +243,56 @@
       "pattern": "^@[a-z0-9][a-z0-9-]{0,40}$",
       "description": "\"@id\" (brands/<id>.json) or an object; {extends:\"@id\", ...partial} deep-merges the partial onto the preset. Validated after the presets are expanded."
     },
+    "fonts": {
+      "type": "array",
+      "maxItems": 8,
+      "description": "Font files of this project, loaded before the first frame, so a brand can use its own typeface. A brand family that is neither bundled, installed nor listed here is a boot error. Every entry states the licence that allows rendering the font into video; make copies it into out/manifest.json.",
+      "items": {
+        "type": "object",
+        "required": [
+          "family",
+          "file",
+          "licence"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "family": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9 _-]{0,63}$",
+            "description": "The name brand.fonts.*.family uses, e.g. \"Brand Sans\"."
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^(?!.*\\.\\.)(?!out/)(?!audio/)[A-Za-z0-9_][A-Za-z0-9_./-]*\\.(woff2|woff|ttf|otf)$",
+            "description": "Project-relative font file (woff2, woff, ttf or otf). assets/ is git-ignored, so a font you may not redistribute stays out of the repository."
+          },
+          "weight": {
+            "type": [
+              "integer",
+              "string"
+            ],
+            "minimum": 1,
+            "maximum": 1000,
+            "pattern": "^[1-9][0-9]{0,2}( [1-9][0-9]{0,3})?$",
+            "description": "400, or a range for a variable font: \"100 900\". Default 400."
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "italic"
+            ],
+            "default": "normal"
+          },
+          "licence": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 200,
+            "description": "Required: the licence that allows this use, as an SPDX id (OFL-1.1) or a short statement (\"Commercial desktop licence incl. video, Acme GmbH\")."
+          }
+        }
+      }
+    },
     "assets": {
       "type": "object",
       "description": "id -> project-relative path under assets/.",
@@ -704,7 +754,7 @@
     "overrides": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Per-format deep-merge applied last. May not override template, page, formats, audio, duration, bpm, loop, variants, cutdowns, exports, clips or transparent (enforced in resolveProject); one timeline and one mix are shared by every format.",
+      "description": "Per-format deep-merge applied last. May not override template, page, formats, audio, duration, bpm, loop, variants, cutdowns, exports, clips, fonts or transparent (enforced in resolveProject); one timeline and one mix are shared by every format.",
       "properties": {
         "9x16": {
           "type": "object"

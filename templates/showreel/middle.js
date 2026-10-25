@@ -5,6 +5,11 @@
 //            flipping on every cut (bg / accent / fg); the payoff phrase lands as the last cut of the sequence.
 import { fieldInk } from './ink.js';
 
+/** True for a line that ends in a number, with or without a unit (+105 %, −20 %, 3,8 %, 2026, 10x, 4 Mio): a full stop
+ *  after it reads as punctuation ("−20 %.") or, in German, as an ordinal ("3."), so the montage drops its dot there. */
+export const endsInNumber = (line) =>
+  /\p{N}(?:[\s\u00A0\u202F]?(?:%|‰|°|×|x|k|m|mio|mrd|bn|€|\$|£|¥|h|s|ms|min|pt|px))?$/iu.test(String(line).trim());
+
 const SLAM = [0.24, 1]; // critically damped and fast: a slam lands in ~0.15 s without overshoot
 const FIELDS = ['bg', 'accent', 'fg'];
 
@@ -92,6 +97,7 @@ export function middleTech(E) {
         return best === c[0] ? fitD(w, box, { valign: 'c', max: S.h, min: R(1.4) }) : best;
       };
       const fits = words.map(layout), fieldOf = (k) => FIELDS[k % FIELDS.length];
+      const stops = words.map((w) => (endsInNumber(w) ? 0 : 1)), payStop = pay && endsInNumber(pay) ? 0 : 1; // no dot after a number
       const payFits = pay ? B.justifyFits(api, pay.split(/\s+/), box, { align: 'l' }) : [];
       const payAt = (j) => n + Math.min(j * 0.5, Math.max(0, payBeats - 1)), dotAt = pay ? payAt(payFits.length - 1) + 0.5 : 0;
       const ctr = (ft) => [ft.box.x + ft.box.w / 2, ft.box.y + ft.box.h / 2];
@@ -112,10 +118,10 @@ export function middleTech(E) {
           const cur = curOf(lb), C = fieldInk(api, fieldOf(cur));
           if (cur < n) { // the full stop scales with the word's slam
             const ft = fits[cur], c = ctr(ft), k = 1 + 0.12 * (1 - M.clamp(after(lb, cur, SLAM))), [x, y, r] = period(ft);
-            return [c[0] + (x - c[0]) * k, c[1] + (y - c[1]) * k, r * k, C.dot];
+            return [c[0] + (x - c[0]) * k, c[1] + (y - c[1]) * k, r * k * stops[cur], C.dot];
           }
           const [x, y, r] = period(payFits[payFits.length - 1]);
-          return [x, y, r * M.clamp(after(lb, dotAt, UI), 0, 1.1), C.dot];
+          return [x, y, r * M.clamp(after(lb, dotAt, UI), 0, 1.1) * payStop, C.dot];
         },
       };
     },

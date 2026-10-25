@@ -10,7 +10,7 @@
 // grid call `await mount({draw(ctx, t, c) {...}, events, scenes, cues, poster})` instead.
 import * as G from './beat.js';
 import { PAGE_TEMPLATE } from './schema.js';
-import { fetchJSON, readQuery, resolveForPage } from './load.js';
+import { fetchJSON, loadProjectFonts, readQuery, resolveForPage } from './load.js';
 import { fnv1a } from './runtime.js';
 
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
@@ -23,7 +23,9 @@ export async function context(search = location.search) {
   const res = r.resolved;
   const beats = await fetchJSON(`/projects/${q.name}/${r.dirs.audio}/beats.json`, true);
   const grid = G.makeGrid(beats || { bpm: res.bpm || 120 }, res.duration || 16);
-  // the bundled families are declared in /engine/fonts/fonts.css; load the brand's two before the first frame
+  // the bundled families are declared in /engine/fonts/fonts.css, project.fonts come from the project; load the
+  // brand's two before the first frame
+  await loadProjectFonts(q.name, res.fonts);
   const fonts = (res.brand && res.brand.fonts) || {};
   await Promise.all(['display', 'ui'].filter((r) => fonts[r] && fonts[r].family)
     .map((r) => document.fonts.load(`${fonts[r].weight || 400} 100px ${fonts[r].family}`).catch(() => [])));

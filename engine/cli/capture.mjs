@@ -4,6 +4,14 @@
 //   npx reelcode capture <fixture:name | http://127.0.0.1:PORT/... | http://localhost:PORT/... | ./path/to/page.html> projects/Y
 //        [--states home,search,report] [--routes name=/path,...] [--selectors id=css,...]
 //        [--w 1440 --h 900 --dpr 2] [--no-full] [--no-crops] [--apply-brand] [--brand-preset id]
+//        [--wait-for css|state=css,...] [--wait-timeout ms] [--warm] [--scroll css|state=css,...] [--scroll-offset px]
+//        [--hide css]
+//
+// Client-rendered apps: --wait-for waits until an element is visible (a demo mounted after hydration), --warm loads
+// every state twice so fonts with font-display: optional are cached and used, --scroll scrolls a state to an element
+// (minus --scroll-offset, e.g. a sticky header), --hide removes overlays (dev badges, cookie banners) before the
+// screenshot. The same recipe can live in project.json content.capture (waitFor, waitTimeout, warm, scroll,
+// scrollOffset, hide); a flag wins over the recipe.
 //
 // --brand-preset id writes brands/<id>.json (+ brands/<id>/logo.*) from the captured brand; with --apply-brand the
 // project's brand becomes "@id".
@@ -24,7 +32,9 @@ const BRAND_VARS = ['bg', 'fg', 'accent', 'muted', 'surface'];
 // Fallback families when the captured app's own fonts are not available to the film page: the bundled ones.
 const HOUSE_FONTS = { display: '"Archivo", sans-serif', ui: '"Inter", sans-serif', mono: '"JetBrains Mono", monospace' };
 const USAGE = 'usage: npx reelcode capture <fixture:name|http://127.0.0.1:PORT/...|path.html> <project> ' +
-  '[--states a,b] [--routes a=/x,b=/y] [--selectors id=css,...] [--w 1440 --h 900 --dpr 2] [--no-full] [--no-crops] [--apply-brand] [--brand-preset id]';
+  '[--states a,b] [--routes a=/x,b=/y] [--selectors id=css,...] [--w 1440 --h 900 --dpr 2] [--no-full] [--no-crops] [--apply-brand] [--brand-preset id] ' +
+  '[--wait-for css|state=css,...] [--wait-timeout ms] [--warm] [--scroll css|state=css,...] [--scroll-offset px] [--hide css]';
+const NAV_MS = 120000; // a dev server may compile a route on its first request
 
 const die = (msg) => { console.error(`capture: ${msg}`); process.exit(1); };
 const warn = (warnings, msg) => { warnings.push(msg); console.error(`capture: warning: ${msg}`); };
@@ -37,7 +47,7 @@ function parseArgv(argv) {
     const a = argv[i];
     if (!a.startsWith('--')) { pos.push(a); continue; }
     const k = a.slice(2);
-    if (['apply-brand', 'no-full', 'no-crops'].includes(k)) flags[k] = true;
+    if (['apply-brand', 'no-full', 'no-crops', 'warm'].includes(k)) flags[k] = true;
     else if (i + 1 < argv.length) flags[k] = argv[++i];
     else die(`missing value for --${k}\n${USAGE}`);
   }
@@ -47,12 +57,24 @@ function parseArgv(argv) {
   return { target: pos[0], projectDir: bare ? join(STUDIO_ROOT, 'projects', pos[1]) : resolve(pos[1]), flags };
 }
 const list = (s) => (s ? String(s).split(',').map((x) => x.trim()).filter(Boolean) : null);
+// id=value pairs; a comma starts a new pair only before "<id>=", so a CSS value may hold a selector list or [a=b]
+const PAIR = /^[A-Za-z0-9_-]+=/;
 const pairs = (s) => {
   if (!s) return null;
   const out = {};
-  for (const p of list(s)) { const i = p.indexOf('='); if (i < 1) die(`bad pair "${p}" (want id=value)`); out[p.slice(0, i)] = p.slice(i + 1); }
+  for (const p of String(s).split(/,(?=\s*[A-Za-z0-9_-]+=)/).map((x) => x.trim()).filter(Boolean)) {
+    const i = p.indexOf('='); if (i < 1) die(`bad pair "${p}" (want id=value)`); out[p.slice(0, i)] = p.slice(i + 1).trim();
+  }
   return out;
 };
+/** A per-state CSS option: one selector for every state ("css" -> {'*': css}) or state=css pairs. */
+const perState = (v, name) => {
+  if (v === undefined || v === null || v === '') return null;
+  const out = typeof v === 'object' ? { ...v } : PAIR.test(String(v)) ? pairs(v) : { '*': String(v).trim() };
+  for (const [k, css] of Object.entries(out)) if (typeof css !== 'string' || !css.trim() || /[{}]/.test(css)) die(`--${name} ${k}: want a CSS selector (got ${JSON.stringify(css)})`);
+  return out;
+};
+const forState = (m, s) => (m ? (m[s] ?? m['*'] ?? null) : null);
 const num = (v, d, name) => {
   if (v === undefined || v === null) return d;
   const n = Number(v);
@@ -128,7 +150,25 @@ function stateUrl(entry, state, routes) {
   const u = new URL(entry); u.searchParams.set('state', state); return u.href;
 }
 
-async function settle(page, warnings, label) {
+/**
+ * Open one state and make it ready for its screenshot. opt (per state, from flags or content.capture):
+ * {warm, waitFor, waitTimeout, hide, scroll, scrollOffset}. Without any of them this is the plain load + fonts path.
+ */
+async function visit(page, url, warnings, label, opt = {}) {
+  for (let pass = opt.warm ? 2 : 1; pass > 0; pass--) {
+    // --warm: the first visit fills the browser cache, so the second one uses fonts a cold visit would skip
+    // (font-display: optional) and images that would still be loading
+    await page.goto(url, { timeout: NAV_MS });
+    if (opt.warm) {
+      try { await page.waitForLoadState('networkidle', { timeout: opt.waitTimeout }); }
+      catch { warn(warnings, `${label}: the network never went idle within ${opt.waitTimeout} ms (--warm)`); }
+      await page.evaluate(() => document.fonts.ready);
+    }
+  }
+  await settle(page, warnings, label, opt);
+}
+
+async function settle(page, warnings, label, opt = {}) {
   await page.waitForLoadState('load');
   await page.evaluate(() => document.fonts.ready);
   try {
@@ -137,9 +177,53 @@ async function settle(page, warnings, label) {
     const defined = await page.evaluate(() => '__fixtureReady' in window);
     if (defined) warn(warnings, `${label}: window.__fixtureReady never became true`);
   }
-  // Freeze anything that still moves: carets, CSS animations, transitions, smooth scroll.
-  await page.addStyleTag({ content: '*,*::before,*::after{transition:none!important;animation:none!important;caret-color:transparent!important;scroll-behavior:auto!important}' });
-  await page.evaluate(() => window.scrollTo(0, 0));
+  if (opt.waitFor) { // fail closed: a screenshot without the element it waited for is a wrong screenshot
+    try { await page.locator(opt.waitFor).first().waitFor({ state: 'visible', timeout: opt.waitTimeout }); }
+    catch { die(`${label}: --wait-for "${opt.waitFor}" did not become visible within ${opt.waitTimeout} ms`); }
+    await page.evaluate(() => document.fonts.ready);
+  }
+  // Freeze anything that still moves: carets, CSS animations, transitions, smooth scroll. --hide removes overlays.
+  let css = '*,*::before,*::after{transition:none!important;animation:none!important;caret-color:transparent!important;scroll-behavior:auto!important}';
+  if (opt.hide) {
+    const bad = await page.evaluate((sel) => { try { document.querySelectorAll(sel); return null; } catch (e) { return e.message; } }, opt.hide);
+    if (bad) die(`--hide "${opt.hide}" is not a valid CSS selector`);
+    css += `${opt.hide}{display:none!important}`;
+  }
+  await page.addStyleTag({ content: css });
+  if (opt.scroll) {
+    const y = await page.evaluate(([sel, off]) => {
+      const el = document.querySelector(sel);
+      if (!el) return null;
+      window.scrollTo(0, Math.max(0, el.getBoundingClientRect().top + window.scrollY - off));
+      return window.scrollY;
+    }, [opt.scroll, opt.scrollOffset || 0]);
+    if (y === null) die(`${label}: --scroll "${opt.scroll}" matched no element`);
+  } else await page.evaluate(() => window.scrollTo(0, 0));
+  if (opt.waitFor || opt.scroll || opt.warm) await page.evaluate(pageQuiet, Math.min(opt.waitTimeout, 5000));
+}
+
+/** Page side: wait until the images in the viewport have loaded and the DOM has been quiet for 300 ms (cap: max ms). */
+async function pageQuiet(max) {
+  const frame = () => new Promise((r) => requestAnimationFrame(() => r()));
+  const inView = (el) => { const r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth; };
+  const t0 = performance.now(), left = () => Math.max(0, max - (performance.now() - t0));
+  await frame(); await frame();
+  const imgs = [...document.images].filter(inView);
+  const loaded = Promise.all(imgs.filter((i) => !i.complete).map((i) => new Promise((r) => {
+    i.addEventListener('load', r, { once: true }); i.addEventListener('error', r, { once: true });
+  })));
+  await Promise.race([loaded, new Promise((r) => setTimeout(r, left()))]);
+  await Promise.all(imgs.map((i) => (i.complete && i.naturalWidth ? i.decode().catch(() => {}) : null)));
+  await new Promise((done) => {
+    let quiet;
+    const fin = () => { mo.disconnect(); clearTimeout(quiet); clearTimeout(cap); done(); };
+    const mo = new MutationObserver(() => { clearTimeout(quiet); quiet = setTimeout(fin, 300); });
+    const cap = setTimeout(fin, left());
+    mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true });
+    quiet = setTimeout(fin, 300);
+  });
+  await document.fonts.ready;
+  await frame(); await frame();
 }
 
 // ---------- page-side probes (run via page.evaluate; must be self-contained) ----------
@@ -155,7 +239,7 @@ function pageRects(sel) {
   };
   document.querySelectorAll('[data-cap]').forEach((el) => add(el.getAttribute('data-cap'), el));
   for (const [id, css] of Object.entries(sel || {})) { try { add(id, document.querySelector(css)); } catch { /* bad selector */ } }
-  return { rects: out, page: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight } };
+  return { rects: out, page: { w: document.documentElement.scrollWidth, h: document.documentElement.scrollHeight }, scroll: { x: window.scrollX, y: window.scrollY } };
 }
 
 function pageBrand() {
@@ -285,6 +369,11 @@ function cleanAssets(dir) {
 }
 
 const safeId = (s) => String(s).replace(/[^a-z0-9_-]+/gi, '_');
+/** A rect clipped to the viewport (screen rects map onto the viewport screenshot), or null when none of it shows. */
+const inViewport = (r, W, H) => {
+  const x = Math.max(0, r.x), y = Math.max(0, r.y), x2 = Math.min(W, r.x + r.w), y2 = Math.min(H, r.y + r.h);
+  return x2 - x >= 1 && y2 - y >= 1 ? { x, y, w: x2 - x, h: y2 - y } : null;
+};
 const px = (r, dpr) => [r.x, r.y, r.w, r.h].map((v) => Math.round(v * dpr));
 
 /** The project's brand merged with the capture (colours, fonts, logo). A "@preset" brand is not expanded here. */
@@ -343,6 +432,17 @@ async function main() {
   const selectors = pairs(flags.selectors) || projCap.selectors || {};
   const wantFull = !flags['no-full'] && projCap.fullPage !== false;
   const wantCrops = !flags['no-crops'] && projCap.crops !== false;
+  const waitFor = perState(flags['wait-for'] ?? projCap.waitFor, 'wait-for');
+  const scroll = perState(flags.scroll ?? projCap.scroll, 'scroll');
+  const hideList = flags.hide ?? projCap.hide;
+  const hide = hideList === undefined ? null : (Array.isArray(hideList) ? hideList : [hideList]).map((x) => String(x).trim()).filter(Boolean).join(', ') || null;
+  if (hide && /[{}]/.test(hide)) die(`--hide: want a CSS selector (got ${JSON.stringify(hide)})`);
+  const offset = Number(flags['scroll-offset'] ?? projCap.scrollOffset ?? 0);
+  if (!Number.isFinite(offset) || offset < 0) die('--scroll-offset must be a number >= 0 (CSS pixels)');
+  const waitTimeout = num(flags['wait-timeout'], projCap.waitTimeout || 30000, 'wait-timeout');
+  const warm = !!flags.warm || projCap.warm === true;
+  /** The visit options of one state (a state=css entry wins over a bare selector for every state). */
+  const optFor = (s) => ({ warm, waitTimeout, hide, scrollOffset: offset, waitFor: forState(waitFor, s), scroll: forState(scroll, s) });
   const warnings = [];
 
   const assetsDir = join(projectDir, 'assets');
@@ -361,30 +461,31 @@ async function main() {
 
     let states = list(flags.states) || projCap.states || (routes ? Object.keys(routes) : null);
     if (!states) {
-      await page.goto(tgt.entry);
-      await settle(page, warnings, 'entry');
+      await visit(page, tgt.entry, warnings, 'entry', optFor('*'));
       states = await page.evaluate(() => (Array.isArray(window.__fixtureStates) ? window.__fixtureStates : null)) || ['default'];
     }
+    for (const [flag, m] of [['wait-for', waitFor], ['scroll', scroll]])
+      for (const k of Object.keys(m || {})) if (k !== '*' && !states.includes(k)) die(`--${flag} names state "${k}", which is not captured (states: ${states.join(', ')})`);
     cleanAssets(assetsDir);
 
     const screens = {}, shots = [];
     let brand = null, fonts = null, logoState = null;
     for (const s of states) {
       const sid = safeId(s);
-      await page.goto(stateUrl(tgt.entry, s, routes));
-      await settle(page, warnings, s);
+      await visit(page, stateUrl(tgt.entry, s, routes), warnings, s, optFor(s));
       const buf = await page.screenshot({ path: join(assetsDir, `screen-${sid}.png`) });
       shots.push(buf);
-      const { rects, page: pg } = await page.evaluate(pageRects, selectors);
+      const { rects, page: pg, scroll: at } = await page.evaluate(pageRects, selectors);
       const entry = { file: `assets/screen-${sid}.png`, w: Math.round(W * DPR), h: Math.round(H * DPR), rects: {} };
+      if (at.x || at.y) entry.scroll = { x: Math.round(at.x * DPR), y: Math.round(at.y * DPR) }; // where the screen sits on full
       if (wantFull) {
         await page.screenshot({ path: join(assetsDir, `full-${sid}.png`), fullPage: true });
         entry.full = { file: `assets/full-${sid}.png`, w: Math.round(Math.max(W, pg.w) * DPR), h: Math.round(Math.max(H, pg.h) * DPR) };
       }
       if (wantCrops) entry.crops = {};
       for (const id of Object.keys(rects).sort()) {
-        const r = rects[id];
-        entry.rects[id] = px(r, DPR);
+        const r = rects[id], vis = inViewport(r, W, H);
+        if (vis) entry.rects[id] = px(vis, DPR); // the part on the screenshot; an element off screen has a crop only
         if (!wantCrops) continue;
         const file = `assets/crops/${sid}-${safeId(id)}.png`;
         const clip = { x: Math.max(0, r.x + r.sx), y: Math.max(0, r.y + r.sy), width: r.w, height: r.h };
@@ -401,8 +502,7 @@ async function main() {
     // Logo: re-open its state, isolate the element on a transparent backdrop, screenshot with alpha.
     let logo = null;
     if (logoState) {
-      await page.goto(stateUrl(tgt.entry, logoState, routes));
-      await settle(page, warnings, `${logoState} (logo)`);
+      await visit(page, stateUrl(tgt.entry, logoState, routes), warnings, `${logoState} (logo)`, optFor(logoState));
       const info = await page.evaluate(pageLogoPrep, selectors.logo || null);
       if (!info) die(`logo vanished on re-open of state "${logoState}"`);
       await page.locator('[data-capture-logo]').first().screenshot({ path: join(assetsDir, 'logo.png'), omitBackground: true });

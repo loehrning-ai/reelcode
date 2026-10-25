@@ -387,7 +387,8 @@ export function counterText(value, p, o = {}) {
   const cur = (x, code) => new Intl.NumberFormat(locale, { style: 'currency', currency: code, minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(x);
   let body;
   if (fmt === 'int') body = num(Math.round(v * 10 ** decimals) / 10 ** decimals, decimals);
-  else if (fmt === 'pct') body = `${num(v, decimals)}%`;
+  // the locale's percent sign and spacing: 42.5% (en-US), 42,5 % (de-DE)
+  else if (fmt === 'pct') body = new Intl.NumberFormat(locale, { style: 'percent', minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(v / 100);
   else if (fmt === 'money') body = o.currency ? cur(v, o.currency) : `${prefix ? '' : '$'}${num(v, decimals)}`;
   else if (fmt === 'currency') body = cur(v, o.currency || NUM.currency);
   else if (fmt === 'compact') body = new Intl.NumberFormat(locale, { notation: 'compact', minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(v);
