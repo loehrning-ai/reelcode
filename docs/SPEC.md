@@ -62,8 +62,9 @@ Every step is awaited; any failure sets `status = 'error'` and records a message
    replace). Validate the result against `PROJECT_SCHEMA` and `content` against the template's `content_schema`.
 4. Size the canvas to the format; device scale factor 1.
 5. Build the theme from the brand (§3.4).
-6. Load the brand's two font families (`document.fonts.load`, then `document.fonts.ready`) and probe that each one
-   really renders. A family that is neither bundled nor installed is `font missing: <role> "<family>"`.
+6. Load `project.fonts` (font files inside the project, each with its `licence`) as `FontFace`s, then the brand's two
+   font families (`document.fonts.load`, then `document.fonts.ready`), and probe that each one really renders. A
+   family that is neither bundled, listed in `project.fonts` nor installed is `font missing: <role> "<family>"`.
 7. Load assets: `project.assets`, `assets/assets.json` with its screens and logo, clips. A file the template's
    `requires` names is mandatory.
 8. Build the beat grid from `audio/beats.json` when it exists, else the nominal grid from `bpm` and `duration` (used
@@ -394,6 +395,10 @@ aborted, so capture never touches the network.
   `[data-cap]` element (or `--selectors id=css`), and record each rect.
 - Logo from `[data-cap="logo"]`; colours from `--brand-*` CSS variables or computed styles; fonts from the computed
   `font-family` of `h1` and `body`, reduced to the first family that renders, else Archivo / Inter.
+- Client-rendered apps: `--wait-for` (fail closed when the element never shows), `--warm` (two loads, so
+  `font-display: optional` fonts are used), `--scroll` with `--scroll-offset`, and `--hide` (overlays removed before
+  the screenshot). The recipe can also live in `content.capture`; flags win. Screen rects are clipped to the
+  viewport; a scrolled screen records `scroll`.
 - Writes `assets/assets.json` (no timestamps, so a capture is reproducible). `--apply-brand` writes colours, fonts and
   logo into the project's brand; `--brand-preset <id>` writes `brands/<id>.json`.
 

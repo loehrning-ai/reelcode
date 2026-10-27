@@ -10,7 +10,7 @@ import * as N from './noise.js';
 import * as A from './assets.js';
 import * as G from './beat.js';
 import { applyCutdown } from './cutdown.js';
-import { fetchJSON, readQuery, resolveForPage } from './load.js';
+import { fetchJSON, loadProjectFonts, readQuery, resolveForPage } from './load.js';
 import { isNotImplemented } from './notimpl.js';
 
 export const SFX = ['click', 'pop', 'thump', 'whoosh', 'riser', 'swish', 'tick'];
@@ -342,8 +342,8 @@ function preview(fx) {
 
 /**
  * Load the brand's two families before the first frame. The bundled families (engine/fonts/fonts.css) load from the
- * engine; any other family must be installed on the machine. A family that does not render is a boot error, never
- * a silent fallback: a film in the wrong typeface is a wrong film.
+ * engine and project.fonts from the project (loadProjectFonts); any other family must be installed on the machine.
+ * A family that does not render is a boot error, never a silent fallback: a film in the wrong typeface is a wrong film.
  */
 async function loadFonts(ctx, theme, fx) {
   const roles = ['display', 'ui'];
@@ -354,8 +354,8 @@ async function loadFonts(ctx, theme, fx) {
   if (!missing.length) return;
   const bundled = await fetchJSON('/engine/fonts/fonts.json').then((j) => Object.keys(j.families)).catch(() => []);
   for (const role of missing) {
-    fx.errors.push(`font missing: ${role} "${T.firstFamily(theme.fonts[role].family)}" is neither bundled nor installed here; ` +
-      `install it, or use a bundled family (${bundled.join(', ')})`);
+    fx.errors.push(`font missing: ${role} "${T.firstFamily(theme.fonts[role].family).replace(/^["']|["']$/g, '')}" is neither bundled nor installed here; ` +
+      `add its file to project.fonts (with its licence), install it, or use a bundled family (${bundled.join(', ')})`);
   }
   throw new Error(fx.errors.pop());
 }
@@ -391,6 +391,7 @@ async function bootInner(fx) {
   ctx.__theme = theme;
   M.setSprings(theme.springs);
 
+  await loadProjectFonts(name, resolved.fonts);
   await loadFonts(ctx, theme, fx);
 
   const assets = await loadAssets(name, resolved, template);

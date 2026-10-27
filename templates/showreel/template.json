@@ -46,6 +46,11 @@
         ],
         "description": "dot (default): an accent dot persists across shots and carries the loop seam. none: no motif."
       },
+      "locale": {
+        "type": "string",
+        "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
+        "description": "BCP 47 tag for every number the film formats (metric, chart): grouping, decimals and the percent sign, e.g. de-DE prints 3,8 % and 1.234. Default en-US."
+      },
       "shots": {
         "type": "array",
         "minItems": 3,
@@ -218,6 +223,131 @@
               ],
               "description": "statement only: bleed (default) crops huge type with the frame; stack sets it inside safe, filling it."
             }
+          }
+        }
+      },
+      "capture": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "The recipe for reelcode capture, kept with the film (ignored when rendering). A capture flag wins over the same key here.",
+        "properties": {
+          "states": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 24,
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "description": "States to capture (default: the routes' ids)."
+          },
+          "routes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "state -> path on the target, e.g. {\"home\": \"/\"}."
+          },
+          "selectors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "description": "capture id -> CSS selector; its rect (clipped to the screen) and crop are recorded in every state where it shows."
+          },
+          "viewport": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "w": {
+                "type": "integer",
+                "minimum": 320,
+                "maximum": 3840
+              },
+              "h": {
+                "type": "integer",
+                "minimum": 320,
+                "maximum": 3840
+              },
+              "dpr": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 3
+              }
+            }
+          },
+          "fullPage": {
+            "type": "boolean",
+            "default": true
+          },
+          "crops": {
+            "type": "boolean",
+            "default": true
+          },
+          "waitFor": {
+            "type": [
+              "string",
+              "object"
+            ],
+            "minLength": 1,
+            "maxLength": 300,
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "description": "CSS selector to wait for (visible) before the screenshot: one for every state, or {state: css}. Capture fails when it never shows."
+          },
+          "waitTimeout": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 600000,
+            "default": 30000,
+            "description": "Milliseconds for waitFor and, with warm, for network idle."
+          },
+          "warm": {
+            "type": "boolean",
+            "default": false,
+            "description": "Load every state twice, so fonts with font-display: optional are cached and used."
+          },
+          "scroll": {
+            "type": [
+              "string",
+              "object"
+            ],
+            "minLength": 1,
+            "maxLength": 300,
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "description": "Scroll to this element before the screenshot: one selector for every state, or {state: css}."
+          },
+          "scrollOffset": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2000,
+            "default": 0,
+            "description": "CSS pixels kept above the scroll target (a sticky header)."
+          },
+          "hide": {
+            "type": [
+              "string",
+              "array"
+            ],
+            "minLength": 1,
+            "maxLength": 300,
+            "maxItems": 16,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "description": "CSS selectors removed before the screenshot (dev badges, cookie banners)."
           }
         }
       }

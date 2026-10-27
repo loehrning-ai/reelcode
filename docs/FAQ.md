@@ -3,7 +3,7 @@
 **Do I need Claude Code?** No. Everything is a CLI; the plugin only teaches an agent the workflow, and the engine always lives in your clone.
 
 **Can I publish the films?** Yes. The music and effects are synthesized by your own run, the bundled fonts are SIL
-OFL. Do not publish macOS `say` voice-over: Apple's licence does not cover it. Use your own recording (`file`
+OFL. A font you add in `project.fonts` is under its own licence, which you state in its `licence` field. Do not publish macOS `say` voice-over: Apple's licence does not cover it. Use your own recording (`file`
 engine) or a licensed text-to-speech service.
 
 **Windows?** Not supported. WSL2 with Ubuntu should behave like Linux.

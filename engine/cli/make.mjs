@@ -230,7 +230,10 @@ async function makeRendition(P, a, log) {
   if (doVideo && a.stills) await deliverables(P, formats, results, log);
   const withStills = doVideo && a.stills;
   const manifest = writeManifest(P, quality, results, lint, sound, S, withStills,
-    { skipped: [...new Set(skipped)].sort(), exports: exportsDone, captions: captions ? { srt: P.rel(captions.srt), vtt: P.rel(captions.vtt) } : null });
+    { skipped: [...new Set(skipped)].sort(), exports: exportsDone, captions: captions ? { srt: P.rel(captions.srt), vtt: P.rel(captions.vtt) } : null,
+      // which font files the film used and the licence each was rendered under
+      fonts: (Array.isArray(P.base.fonts) ? P.base.fonts : []).map((f) => ({ family: f.family, file: f.file, licence: f.licence,
+        sha256: existsSync(join(P.dir, f.file)) ? sha256File(join(P.dir, f.file)) : null })) });
   console.log(summary(P, results, sound, manifest, lint, quality, withStills));
   return { variant: P.variant, cutdown: P.cutdown, manifest: P.rel(manifest), duration: S.duration };
 }

@@ -3,6 +3,26 @@
 All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- `capture` for apps that render in the browser: `--wait-for` (fails when the element never shows), `--wait-timeout`,
+  `--warm` (two loads, so `font-display: optional` fonts are used), `--scroll` with `--scroll-offset`, and `--hide`
+  (dev badges, cookie banners). `--wait-for` and `--scroll` take one selector or `state=css` pairs.
+- `showreel` accepts `content.capture` (the capture recipe, kept with the film) and `content.locale` (number format,
+  e.g. `de-DE`).
+- `project.fonts`: font files inside the project with a required `licence`; loaded before the first frame, checked by
+  lint, and recorded with their sha256 in `out/manifest.json`.
+
+### Changed
+- `showreel` `montage`: a line that ends in a number gets no full stop.
+- Percentages follow the locale (`42.5%` in `en-US`, `42,5 %` in `de-DE`).
+- `capture`: screen rects are clipped to the screenshot; a scrolled screen records `scroll`. A comma in
+  `--selectors` or `--routes` starts a new pair only before `id=`, so a value may hold a selector list.
+
+### Fixed
+- `font missing` no longer prints a quoted family with doubled quotes.
+
 ## [0.1.0] - 2026-10-20
 
 First public release.

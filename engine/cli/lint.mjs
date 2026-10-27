@@ -66,6 +66,7 @@ function schemaChecks(P, R) {
   for (const e of P.errors) R.error(`schema ${e}`);
   const b = P.base;
   for (const [id, p] of Object.entries(b.assets || {})) if (!existsSync(join(P.dir, String(p)))) R.error(`assets: ${id} -> ${p} is missing`);
+  (Array.isArray(b.fonts) ? b.fonts : []).forEach((f, i) => { if (f && f.file && !existsSync(join(P.dir, f.file))) R.error(`assets: fonts[${i}] ${f.file} is missing`); });
   if (b.brand && b.brand.logo && !existsSync(b.brand.logo.startsWith('brands/') ? join(STUDIO_ROOT, b.brand.logo) : join(P.dir, b.brand.logo))) R.error(`assets: brand.logo ${b.brand.logo} is missing`);
   const aj = join(P.dir, 'assets', 'assets.json');
   const json = existsSync(aj) ? JSON.parse(readFileSync(aj, 'utf8')) : null;
